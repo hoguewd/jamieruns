@@ -3,500 +3,482 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rothman Orthopaedics 8K — Training Tracker</title>
+<title>Rothman Orthopaedics 8K — Training Log</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#F1F5F3;
-    --panel:#FFFFFF;
-    --panel-alt:#E9EFEC;
-    --panel-border:#D6E0DB;
-    --ink:#172420;
-    --ink-dim:#57685F;
-    --ink-faint:#8A9A92;
-    --river:#1D7A9C;
-    --river-dim:#DCEEF4;
-    --rust:#B85E1E;
-    --rust-dim:#F7E6D4;
-    --leaf:#3F8C3F;
-    --leaf-dim:#E1EFDB;
-    --gold:#A67509;
-    --gold-dim:#F6EAD0;
-    --grey:#6B7A73;
-    --plush-pink:#EA9F9A;
-    --plush-pink-dim:#F7D6D3;
-    --plush-purple:#AC94D4;
-    --plush-purple-dim:#E2D8F2;
-    --plush-navy:#2E3A45;
-    --plush-orange:#E8952F;
-    --plush-black:#2B2B28;
-    --radius:14px;
+    --bg:#F3F2F2;
+    --surface:#EAE9E9;
+    --ink:#201F1D;
+    --ink-dim:#605D5D;
+    --ink-faint:#7D7979;
+    --ink-faint2:#9B9797;
+    --neutral-300:#D7D3D3;
+    --neutral-800:#444141;
+    --divider:rgba(32,31,29,0.16);
+    --accent:#B68235;
+    --accent-100:#FFF3E4;
+    --accent-200:#FFE3BF;
+    --accent-300:#FACB8D;
+    --accent-400:#E1AD66;
+    --accent-600:#A06F24;
+    --accent-700:#7D5411;
+    --accent-800:#5A3B0A;
+    --radius-sm:2px;
+    --radius-md:4px;
+    --radius-lg:7px;
+    --font-heading:'Cormorant Garamond', serif;
+    --font-body:'Lora', serif;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
     background:var(--bg);
     color:var(--ink);
-    font-family:'Manrope',sans-serif;
+    font-family:var(--font-body);
+    font-size:15px;
+    line-height:1.55;
     min-height:100vh;
     -webkit-font-smoothing:antialiased;
   }
   .wrap{
-    max-width:720px;
+    max-width:490px;
     margin:0 auto;
-    padding:20px 16px 60px;
+    padding:30px 20px 64px;
   }
 
-  /* ---------- Hero ---------- */
-  .hero{
-    background:linear-gradient(160deg,var(--panel) 0%, #E7EFEC 100%);
-    border:1px solid var(--panel-border);
-    border-radius:var(--radius);
-    padding:22px 22px 20px;
-    position:relative;
-    overflow:hidden;
-  }
-  .hero::before{
-    content:"";
-    position:absolute;
-    top:-40%; right:-15%;
-    width:260px; height:260px;
-    background:radial-gradient(circle, rgba(29,122,156,0.12) 0%, rgba(29,122,156,0) 70%);
-    pointer-events:none;
-  }
-  .eyebrow{
-    font-family:'JetBrains Mono',monospace;
+  /* ---------- Header ---------- */
+  .kicker{
+    margin:0 0 10px;
+    font-family:var(--font-heading);
     font-size:11px;
-    letter-spacing:0.14em;
+    letter-spacing:0.18em;
     text-transform:uppercase;
-    color:var(--river);
-    margin:0 0 6px;
+    color:var(--accent-700);
+    font-variant-numeric:tabular-nums;
   }
   h1{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:clamp(20px,5vw,26px);
-    font-weight:700;
-    margin:0 0 8px;
-    line-height:1.15;
+    font-family:var(--font-heading);
+    font-weight:400;
+    font-size:clamp(28px,7vw,34px);
+    line-height:1.05;
+    letter-spacing:-0.02em;
+    margin:0 0 10px;
   }
-  .race-meta{
+  header{
+    border-bottom:1px solid var(--divider);
+    padding-bottom:18px;
+  }
+  .subtitle{
+    margin:0;
     font-size:13px;
-    color:var(--ink-dim);
-    margin:0 0 18px;
+    font-style:italic;
     line-height:1.5;
+    color:var(--ink-dim);
   }
-  .hero-row{
+
+  /* ---------- Stat strip ---------- */
+  .stat-strip{
     display:flex;
-    align-items:flex-end;
-    justify-content:space-between;
-    gap:16px;
-    flex-wrap:wrap;
+    align-items:stretch;
+    border-bottom:1px solid var(--divider);
+  }
+  .stat-count{
+    flex:0 0 auto;
+    padding:18px 18px 18px 0;
+    border-right:1px solid var(--divider);
+    min-width:110px;
   }
   .countdown-num{
-    font-family:'JetBrains Mono',monospace;
-    font-size:clamp(34px,10vw,46px);
-    font-weight:700;
-    color:var(--gold);
+    font-family:var(--font-heading);
+    font-weight:400;
+    font-size:46px;
     line-height:1;
+    letter-spacing:-0.02em;
+    font-variant-numeric:tabular-nums;
+    color:var(--accent-700);
   }
   .countdown-label{
-    font-family:'JetBrains Mono',monospace;
-    font-size:11px;
-    letter-spacing:0.1em;
+    margin-top:5px;
+    font-family:var(--font-heading);
+    font-size:10.5px;
+    letter-spacing:0.16em;
     text-transform:uppercase;
-    color:var(--ink-faint);
-    margin-top:4px;
+    color:var(--ink-dim);
   }
-  .progress-block{
+  .stat-progress{
     flex:1;
-    min-width:180px;
+    padding:18px 0 18px 18px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
   }
   .progress-label{
-    display:flex;
-    justify-content:space-between;
-    font-family:'JetBrains Mono',monospace;
-    font-size:11px;
+    font-family:var(--font-heading);
+    font-size:10.5px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  .progress-count{
+    font-family:var(--font-heading);
+    font-size:22px;
+    line-height:1.1;
+    margin-top:6px;
+    font-variant-numeric:tabular-nums;
+  }
+  .progress-count span{
+    font-size:13px;
     color:var(--ink-faint);
-    margin-bottom:6px;
-    letter-spacing:0.04em;
+    font-style:italic;
+    margin-left:8px;
   }
   .progress-track{
-    height:8px;
-    border-radius:999px;
-    background:var(--panel-alt);
-    overflow:hidden;
-    border:1px solid var(--panel-border);
+    margin-top:10px;
+    height:2px;
+    background:var(--neutral-300);
   }
   .progress-fill{
-    height:100%;
-    background:linear-gradient(90deg, var(--leaf), var(--river));
-    border-radius:999px;
+    height:2px;
+    background:var(--accent);
     transition:width 0.4s ease;
   }
 
-  /* ---------- Week Tabs ---------- */
-  .week-tabs{
-    display:flex;
-    gap:8px;
-    overflow-x:auto;
-    padding:18px 2px 6px;
-    scroll-snap-type:x proximity;
-  }
-  .week-tabs::-webkit-scrollbar{height:5px;}
-  .week-tabs::-webkit-scrollbar-thumb{background:var(--panel-border);border-radius:4px;}
-  .week-tab{
-    flex:0 0 auto;
-    scroll-snap-align:start;
-    background:var(--panel);
-    border:1px solid var(--panel-border);
-    border-radius:10px;
-    padding:8px 12px 10px;
-    cursor:pointer;
-    text-align:left;
-    min-width:56px;
-    position:relative;
-    transition:border-color 0.15s ease, background 0.15s ease;
-  }
-  .week-tab:hover{background:var(--panel-alt);}
-  .week-tab .wk-num{
-    font-family:'JetBrains Mono',monospace;
-    font-weight:700;
-    font-size:14px;
-    color:var(--ink);
-    display:block;
-  }
-  .week-tab .wk-phase{
-    font-size:9px;
-    color:var(--ink-faint);
-    text-transform:uppercase;
-    letter-spacing:0.05em;
-    display:block;
-    margin-top:2px;
-    white-space:nowrap;
-  }
-  .week-tab .wk-fill{
-    position:absolute;
-    left:0; bottom:0;
-    height:3px;
-    background:var(--leaf);
-    border-radius:0 0 10px 10px;
-    transition:width 0.3s ease;
-  }
-  .week-tab.active{
-    border-color:var(--river);
-    background:var(--river-dim);
-    box-shadow:0 0 0 1px var(--river) inset;
-  }
-  .week-tab.current-marker::after{
-    content:"●";
-    position:absolute;
-    top:6px; right:7px;
-    color:var(--gold);
-    font-size:8px;
-  }
-
-  /* ---------- Week Panel ---------- */
-  .panel{
-    background:var(--panel);
-    border:1px solid var(--panel-border);
-    border-radius:var(--radius);
-    margin-top:14px;
-    overflow:hidden;
-  }
-  .panel-head{
+  /* ---------- Week nav ---------- */
+  .week-nav{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:10px;
-    padding:16px 18px 14px;
-    border-bottom:1px solid var(--panel-border);
-    flex-wrap:wrap;
-  }
-  .panel-head-left .panel-phase{
-    font-family:'JetBrains Mono',monospace;
-    font-size:10px;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color:var(--rust);
-    margin:0 0 3px;
-  }
-  .panel-head-left h2{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:17px;
-    margin:0;
-    font-weight:600;
-  }
-  .panel-head-left .panel-range{
-    font-size:12px;
-    color:var(--ink-dim);
-    margin-top:2px;
-  }
-  .head-actions{
-    display:flex;
-    gap:8px;
-    flex-shrink:0;
-  }
-  .icon-btn{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    background:var(--panel-alt);
-    border:1px solid var(--panel-border);
-    color:var(--ink-dim);
-    font-family:'Manrope',sans-serif;
-    font-size:12px;
-    font-weight:600;
-    padding:7px 11px;
-    border-radius:9px;
-    cursor:pointer;
-    transition:all 0.15s ease;
-  }
-  .icon-btn:hover{color:var(--ink);border-color:var(--river);}
-  .icon-btn.active{
-    background:var(--river-dim);
-    border-color:var(--river);
-    color:var(--ink);
-  }
-  .icon-btn svg{width:14px;height:14px;flex-shrink:0;}
-
-  .week-quote{
-    display:flex;
-    align-items:center;
     gap:12px;
-    background:var(--rust-dim);
-    border-bottom:1px solid var(--panel-border);
-    padding:12px 18px;
+    padding:14px 0;
+    border-bottom:1px solid var(--divider);
   }
-  .quote-mascot{
-    flex-shrink:0;
-    width:38px;height:38px;
-    border-radius:10px;
-    background:var(--panel);
-    border:1.5px solid var(--rust);
-    color:var(--rust);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-  .quote-mascot svg{width:23px;height:23px;}
-  .quote-bubble{
-    position:relative;
-    background:var(--panel);
-    border:1.5px solid var(--rust);
-    border-radius:10px;
-    padding:8px 13px;
-    flex:1;
-    min-width:0;
-  }
-  .quote-bubble::before{
-    content:"";
-    position:absolute;
-    left:-8px; top:50%;
-    transform:translateY(-50%);
-    width:0;height:0;
-    border-top:6px solid transparent;
-    border-bottom:6px solid transparent;
-    border-right:8px solid var(--rust);
-  }
-  .quote-bubble::after{
-    content:"";
-    position:absolute;
-    left:-6px; top:50%;
-    transform:translateY(-50%);
-    width:0;height:0;
-    border-top:5px solid transparent;
-    border-bottom:5px solid transparent;
-    border-right:7px solid var(--panel);
-  }
-  .quote-bubble span{
-    font-family:'Space Grotesk',sans-serif;
-    font-size:13.5px;
-    font-weight:600;
-    font-style:italic;
-    color:var(--ink);
-    line-height:1.35;
-  }
-
-  .swap-hint{
-    font-size:11.5px;
-    color:var(--ink-faint);
-    padding:8px 18px;
-    border-bottom:1px solid var(--panel-border);
-    display:flex;
-    align-items:center;
-    gap:7px;
-  }
-  .swap-hint svg{width:12px;height:12px;flex-shrink:0;color:var(--ink-faint);}
-
-  /* ---------- Day Cards ---------- */
-  .day-list{padding:8px;}
-  .day-card{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:12px 8px 12px 10px;
-    border-radius:10px;
-    margin:2px 0;
-    transition:background 0.15s ease, box-shadow 0.15s ease;
-    position:relative;
-  }
-  .day-card.selected{
-    box-shadow:0 0 0 2px var(--river) inset;
-    background:var(--river-dim);
-  }
-  .day-card.rest-card{opacity:0.72;}
-  .day-card.done-card{opacity:0.68;}
-
-  .day-date{
-    width:50px;
-    flex-shrink:0;
-    text-align:center;
-  }
-  .day-date .dow{
-    font-family:'JetBrains Mono',monospace;
-    font-size:10px;
-    letter-spacing:0.08em;
-    color:var(--ink-faint);
-    text-transform:uppercase;
-    display:block;
-  }
-  .day-date .dnum{
-    font-family:'JetBrains Mono',monospace;
-    font-size:16px;
-    font-weight:600;
-    color:var(--ink-dim);
-    display:block;
-  }
-
-  .type-icon{
-    width:34px;height:34px;
-    border-radius:9px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-shrink:0;
-  }
-  .type-icon svg{width:17px;height:17px;}
-  .type-icon.run{background:var(--river-dim);color:var(--river);}
-  .type-icon.gym{background:var(--rust-dim);color:var(--rust);}
-  .type-icon.rest{background:var(--panel-alt);color:var(--grey);}
-  .type-icon.race{background:var(--gold-dim);color:var(--gold);}
-
-  .day-body{flex:1;min-width:0;}
-  .day-title{
-    font-size:14px;
-    font-weight:700;
-    color:var(--ink);
-    margin:0;
-    line-height:1.3;
-  }
-  .day-title .dur{
-    font-family:'JetBrains Mono',monospace;
-    font-weight:600;
-    color:var(--river);
-    margin-left:6px;
-  }
-  .day-detail{
-    font-size:12px;
-    color:var(--ink-dim);
-    margin:2px 0 0;
-    line-height:1.4;
-  }
-  .day-detail.pattern-detail{
-    font-size:13.5px;
-    font-weight:700;
-    color:var(--river);
-    background:var(--river-dim);
-    padding:7px 11px;
-    border-radius:8px;
-    margin-top:6px;
-    line-height:1.45;
-  }
-  .race-card .day-title .dur{color:var(--gold);}
-  .race-card .type-icon{position:relative;}
-
-  .checkbox-wrap{
-    flex-shrink:0;
-    width:26px;
-    display:flex;
-    justify-content:center;
-  }
-  .cbx{
-    appearance:none;
-    -webkit-appearance:none;
-    width:22px;height:22px;
-    border-radius:7px;
-    border:2px solid var(--panel-border);
-    background:var(--panel-alt);
-    cursor:pointer;
-    position:relative;
-    transition:all 0.15s ease;
-    flex-shrink:0;
-  }
-  .cbx:hover{border-color:var(--river);}
-  .cbx:checked{background:var(--leaf);border-color:var(--leaf);}
-  .cbx:checked::after{
-    content:"";
-    position:absolute;
-    left:6px; top:2px;
-    width:6px; height:11px;
-    border:solid #FFFFFF;
-    border-width:0 2.5px 2.5px 0;
-    transform:rotate(40deg);
-  }
-  .cbx.race-cbx:checked{background:var(--gold);border-color:var(--gold);}
-  .cbx.race-cbx:checked::after{border-color:#FFFFFF;}
-  .cbx:disabled{opacity:0.35;pointer-events:none;}
-
-  .handle-btn{
-    flex-shrink:0;
-    width:32px;height:32px;
+  .week-nav-btn{
+    width:36px;height:36px;
+    flex:0 0 auto;
     display:flex;
     align-items:center;
     justify-content:center;
     background:transparent;
-    border:none;
-    border-radius:8px;
-    color:var(--ink-faint);
+    border:1px solid var(--divider);
+    border-radius:var(--radius-md);
+    color:var(--ink);
     cursor:pointer;
-    transition:all 0.15s ease;
-    padding:0;
   }
-  .handle-btn svg{width:16px;height:16px;}
-  .handle-btn:hover{color:var(--ink);background:var(--panel-alt);}
-  .handle-btn.selected{color:var(--river);background:var(--river-dim);}
+  .week-nav-btn:hover:not(:disabled){background:color-mix(in srgb, var(--ink) 6%, transparent);}
+  .week-nav-btn:disabled{opacity:0.35;cursor:not-allowed;}
+  .week-nav-btn svg{width:16px;height:16px;}
+  .week-center{
+    text-align:center;
+    flex:1;
+    min-width:0;
+  }
+  .week-title{
+    font-family:var(--font-heading);
+    font-size:20px;
+    line-height:1.15;
+    font-variant-numeric:tabular-nums;
+  }
+  .week-title span{color:var(--ink-faint2);}
+  .week-phase{
+    margin-top:2px;
+    font-size:11.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--accent-700);
+    font-family:var(--font-heading);
+  }
+  .week-range{
+    margin-top:2px;
+    font-size:12px;
+    font-style:italic;
+    color:var(--ink-dim);
+    font-variant-numeric:tabular-nums;
+  }
 
-  .swap-badge{
-    position:absolute;
-    top:-6px; left:38px;
-    background:var(--river);
-    color:#FFFFFF;
-    font-family:'JetBrains Mono',monospace;
+  /* ---------- Week ticks ---------- */
+  .week-ticks{
+    display:flex;
+    gap:3px;
+    padding:10px 0 12px;
+    border-bottom:1px solid var(--divider);
+  }
+  .tick-btn{
+    flex:1;
+    height:26px;
+    padding:0;
+    border:0;
+    background:transparent;
+    cursor:pointer;
+    display:flex;
+    align-items:flex-end;
+  }
+  .tick-bar{
+    display:block;
+    width:100%;
+    border-radius:1px;
+    background:var(--neutral-300);
+  }
+  .tick-bar.current{outline:1px solid var(--accent-700);outline-offset:1px;}
+
+  /* ---------- Quote ---------- */
+  .quote-figure{
+    margin:0;
+    padding:18px 0;
+    border-bottom:1px solid var(--divider);
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+  }
+  .quote-icon{flex:0 0 auto;color:var(--accent);margin-top:2px;}
+  .quote-icon svg{width:26px;height:26px;}
+  .quote-text{
+    margin:0;
+    font-family:var(--font-heading);
+    font-size:18px;
+    font-style:italic;
+    line-height:1.35;
+  }
+
+  /* ---------- Section head ---------- */
+  .section-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:10px;
+    padding:18px 0 8px;
+  }
+  .section-head h2{
+    margin:0;
+    font-family:var(--font-heading);
+    font-weight:400;
+    font-size:24px;
+  }
+  .btn-outline{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:var(--font-heading);
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink);
+    background:transparent;
+    border:1px solid var(--divider);
+    border-radius:var(--radius-md);
+    padding:8px 12px;
+    cursor:pointer;
+    white-space:nowrap;
+    flex:0 0 auto;
+  }
+  .btn-outline:hover{background:color-mix(in srgb, var(--ink) 6%, transparent);}
+  .btn-outline svg{width:13px;height:13px;}
+  .swap-hint{
+    margin:0 0 8px;
+    font-size:12px;
+    font-style:italic;
+    color:var(--ink-faint);
+    line-height:1.45;
+  }
+
+  /* ---------- Day rows ---------- */
+  .day-list{border-top:1px solid var(--ink);}
+  .day-row{
+    display:flex;
+    gap:12px;
+    padding:15px 0;
+    border-bottom:1px solid var(--divider);
+    align-items:flex-start;
+  }
+  .day-row.selected{
+    background:var(--accent-100);
+    box-shadow:0 0 0 1px var(--accent-300);
+  }
+  .day-row.dim{opacity:0.6;}
+  .day-date{
+    flex:0 0 34px;
+    padding-top:2px;
+  }
+  .day-date .dow{
+    font-family:var(--font-heading);
     font-size:10px;
-    font-weight:700;
-    width:16px;height:16px;
-    border-radius:50%;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+  .day-date .dnum{
+    font-family:var(--font-heading);
+    font-size:19px;
+    line-height:1.1;
+    font-variant-numeric:tabular-nums;
+    color:var(--neutral-800);
+  }
+  .day-body{flex:1;min-width:0;}
+  .day-kicker{
+    font-family:var(--font-heading);
+    font-size:9.5px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--accent-700);
+  }
+  .day-title{
+    margin:2px 0 0;
+    font-family:var(--font-heading);
+    font-size:18px;
+    line-height:1.25;
+  }
+  .day-title .dur{
+    margin-left:8px;
+    font-size:13.5px;
+    font-style:italic;
+    font-variant-numeric:tabular-nums;
+    color:var(--accent-700);
+  }
+  .day-detail{
+    margin:4px 0 0;
+    font-size:13px;
+    line-height:1.5;
+    color:var(--ink-dim);
+  }
+  .day-detail.pattern-detail{
+    margin:8px 0 0;
+    font-size:13.5px;
+    line-height:1.5;
+    padding:9px 12px;
+    background:var(--accent-100);
+    border:1px solid var(--accent-200);
+    border-radius:var(--radius-md);
+    color:var(--ink);
+  }
+  .day-actions{
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:2px;
+  }
+  .check-btn{
+    width:44px;height:44px;
     display:flex;
     align-items:center;
     justify-content:center;
+    background:transparent;
+    border:0;
+    padding:0;
+    cursor:pointer;
+  }
+  .check-box{
+    width:26px;height:26px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:var(--radius-sm);
+    border:1px solid var(--neutral-300);
+    color:var(--accent);
+    background:transparent;
+  }
+  .check-box.checked{
+    border-color:var(--accent);
+    background:var(--accent-100);
+  }
+  .check-box svg{width:15px;height:15px;}
+  .swap-btn{
+    width:44px;height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+    border:0;
+    padding:0;
+    cursor:pointer;
+    color:var(--ink-faint2);
+  }
+  .swap-btn.active{color:var(--accent-700);}
+  .swap-btn svg{width:15px;height:15px;}
+  .swap-btn .swap-label{
+    font-family:var(--font-heading);
+    font-size:11px;
+    letter-spacing:0.1em;
+  }
+
+  /* ---------- Thought Dump ---------- */
+  .thought-section{
+    margin-top:36px;
+    padding-top:18px;
+    border-top:1px solid var(--divider);
+  }
+  .thought-body{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .thought-input-wrap{flex:1;min-width:0;}
+  .thought-input-wrap.eaten{
+    animation:get-eaten 0.55s cubic-bezier(.5,-0.2,.7,.4) forwards;
+  }
+  @keyframes get-eaten{
+    0%{ transform:translateX(0) scale(1); opacity:1; }
+    100%{ transform:translateX(46px) scale(0.1) rotate(8deg); opacity:0; }
+  }
+  .thought-input{
+    width:100%;
+    min-height:36px;
+    padding:6px 10px;
+    font:inherit;
+    font-family:var(--font-body);
+    font-size:14px;
+    color:var(--ink);
+    caret-color:var(--accent);
+    background:transparent;
+    border:1px solid var(--divider);
+    border-radius:var(--radius-md);
+  }
+  .thought-input::placeholder{color:var(--ink-faint2);}
+  .thought-input:focus{outline:none;border-color:var(--accent);}
+  .eater-bear-wrap{position:relative;flex:0 0 auto;width:60px;height:60px;}
+  .eater-bear{width:60px;height:60px;transform-origin:50% 60%;}
+  .eater-bear .mouth-open{opacity:0;transition:opacity .12s ease;}
+  .eater-bear.chomping .mouth-closed{opacity:0;}
+  .eater-bear.chomping .mouth-open{opacity:1;}
+  .eater-bear.chomping{animation:chomp-wiggle 0.6s ease-in-out;}
+  @keyframes chomp-wiggle{
+    0%{ transform:scale(1) rotate(0deg); }
+    20%{ transform:scale(1.15) rotate(-5deg); }
+    40%{ transform:scale(0.92) rotate(4deg); }
+    60%{ transform:scale(1.12) rotate(-3deg); }
+    100%{ transform:scale(1) rotate(0deg); }
+  }
+  .munch-text{
+    position:absolute;
+    top:-14px; left:50%;
+    transform:translateX(-50%);
+    font-family:var(--font-heading);
+    font-size:12px;
+    letter-spacing:0.1em;
+    color:var(--accent-700);
+    opacity:0;
+    white-space:nowrap;
+    pointer-events:none;
+  }
+  .munch-text.show{animation:munch-pop 0.6s ease-out;}
+  @keyframes munch-pop{
+    0%{ opacity:0; transform:translate(-50%,4px) scale(0.7); }
+    30%{ opacity:1; transform:translate(-50%,-3px) scale(1.15); }
+    60%{ opacity:1; transform:translate(-50%,-6px) scale(1); }
+    100%{ opacity:0; transform:translate(-50%,-10px) scale(1); }
   }
 
   .footnote{
+    margin:36px 0 0;
     text-align:center;
     font-size:11px;
-    color:var(--ink-faint);
-    margin-top:22px;
+    font-style:italic;
     line-height:1.6;
+    color:var(--ink-faint);
   }
 
   @media (prefers-reduced-motion: reduce){
-    *{transition:none !important;}
-    .buddy-svg{animation:none !important;}
-    .celebrate-overlay.show .celebrate-content{animation:celebrate-fade 1.2s ease-out forwards !important;}
-    .thought-input-wrap.eaten{animation:celebrate-fade 0.4s ease-out forwards !important;}
-    .eater-bear.chomping{animation:none !important;}
-    .munch-text.show{animation:none !important;opacity:1 !important;}
+    *{animation:none !important; transition:none !important;}
   }
 
   /* ---------- Celebrate Pop-up ---------- */
@@ -513,7 +495,7 @@
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:12px;
+    gap:14px;
     transform:scale(0);
     opacity:0;
   }
@@ -521,20 +503,19 @@
     animation:celebrate-pop 1.5s ease-out forwards;
   }
   .celebrate-bear{
-    width:130px;height:130px;
-    filter:drop-shadow(0 10px 22px rgba(23,36,32,0.28));
+    width:124px;height:124px;
+    filter:drop-shadow(0 10px 22px rgba(45,43,43,0.28));
   }
   .celebrate-text{
-    font-family:'Space Grotesk',sans-serif;
+    font-family:var(--font-heading);
     font-size:26px;
-    font-weight:700;
-    letter-spacing:0.03em;
-    color:var(--leaf);
-    background:var(--panel);
-    padding:7px 20px;
-    border-radius:999px;
-    border:2.5px solid var(--leaf);
-    box-shadow:0 8px 20px rgba(23,36,32,0.18);
+    font-weight:400;
+    letter-spacing:0.04em;
+    color:var(--ink);
+    background:var(--bg);
+    padding:6px 22px;
+    border:1px solid var(--accent);
+    border-radius:var(--radius-md);
   }
   @keyframes celebrate-pop{
     0%{ transform:scale(0) rotate(-10deg); opacity:0; }
@@ -543,82 +524,8 @@
     75%{ transform:scale(1.1) rotate(1deg); opacity:1; }
     100%{ transform:scale(1.5) rotate(0deg); opacity:0; }
   }
-  @keyframes celebrate-fade{
-    0%{ opacity:0; }
-    15%{ opacity:1; }
-    80%{ opacity:1; }
-    100%{ opacity:0; }
-  }
-
-  /* ---------- Thought Dump ---------- */
-  .thought-body{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:16px 18px 20px;
-  }
-  .thought-input-wrap{
-    flex:1;
-    min-width:0;
-  }
-  .thought-input-wrap.eaten{
-    animation:get-eaten 0.55s cubic-bezier(.5,-0.2,.7,.4) forwards;
-  }
-  @keyframes get-eaten{
-    0%{ transform:translateX(0) scale(1); opacity:1; }
-    100%{ transform:translateX(46px) scale(0.1) rotate(8deg); opacity:0; }
-  }
-  .thought-input{
-    width:100%;
-    padding:11px 14px;
-    border-radius:10px;
-    border:1.5px solid var(--panel-border);
-    background:var(--panel-alt);
-    color:var(--ink);
-    font-family:'Manrope',sans-serif;
-    font-size:14px;
-  }
-  .thought-input::placeholder{color:var(--ink-faint);}
-  .thought-input:focus{outline:none;border-color:var(--river);}
-
-  .eater-bear-wrap{
-    position:relative;
-    flex-shrink:0;
-    width:60px;height:60px;
-  }
-  .eater-bear{
-    width:60px;height:60px;
-    transform-origin:50% 60%;
-  }
-  .eater-bear .mouth-open{opacity:0;transition:opacity .12s ease;}
-  .eater-bear.chomping .mouth-closed{opacity:0;}
-  .eater-bear.chomping .mouth-open{opacity:1;}
-  .eater-bear.chomping{animation:chomp-wiggle 0.6s ease-in-out;}
-  @keyframes chomp-wiggle{
-    0%{ transform:scale(1) rotate(0deg); }
-    20%{ transform:scale(1.15) rotate(-5deg); }
-    40%{ transform:scale(0.92) rotate(4deg); }
-    60%{ transform:scale(1.12) rotate(-3deg); }
-    100%{ transform:scale(1) rotate(0deg); }
-  }
-  .munch-text{
-    position:absolute;
-    top:-16px; left:50%;
-    transform:translateX(-50%);
-    font-family:'Space Grotesk',sans-serif;
-    font-weight:700;
-    font-size:12px;
-    color:var(--rust);
-    opacity:0;
-    white-space:nowrap;
-    pointer-events:none;
-  }
-  .munch-text.show{animation:munch-pop 0.6s ease-out;}
-  @keyframes munch-pop{
-    0%{ opacity:0; transform:translate(-50%,4px) scale(0.7); }
-    30%{ opacity:1; transform:translate(-50%,-3px) scale(1.15); }
-    60%{ opacity:1; transform:translate(-50%,-6px) scale(1); }
-    100%{ opacity:0; transform:translate(-50%,-10px) scale(1); }
+  @media (prefers-reduced-motion: reduce){
+    .celebrate-overlay.show .celebrate-content{animation:none !important;opacity:1 !important;transform:scale(1) !important;}
   }
 
   /* ---------- Side Buddies ---------- */
@@ -632,7 +539,7 @@
     gap:20px;
     z-index:5;
   }
-  @media (min-width:1060px){
+  @media (min-width:920px){
     .side-buddy{display:flex;}
   }
   .side-buddy-left{left:22px;}
@@ -641,7 +548,7 @@
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:7px;
+    gap:8px;
   }
   .buddy-svg{
     width:56px;height:56px;
@@ -660,46 +567,23 @@
     75%{ transform:translateY(-5px) rotate(-3deg); }
     90%{ transform:translateY(0) rotate(2deg); }
   }
-  .buddy-bubble{
-    position:relative;
-    background:var(--panel);
-    border:1.5px solid var(--panel-border);
-    border-radius:10px;
-    padding:6px 10px;
-    max-width:102px;
+  @media (prefers-reduced-motion: reduce){
+    .buddy-svg{animation:none !important;}
+  }
+  .buddy-caption{
+    max-width:104px;
     text-align:center;
-    box-shadow:0 3px 10px rgba(23,36,32,0.08);
-  }
-  .buddy-bubble span{
-    font-family:'Manrope',sans-serif;
-    font-size:10.5px;
-    font-weight:700;
-    color:var(--ink);
-    line-height:1.3;
-  }
-  .buddy-bubble::before{
-    content:"";
-    position:absolute;
-    top:-7px; left:50%;
-    transform:translateX(-50%);
-    width:0;height:0;
-    border-left:6px solid transparent;
-    border-right:6px solid transparent;
-    border-bottom:7px solid var(--panel-border);
-  }
-  .buddy-bubble::after{
-    content:"";
-    position:absolute;
-    top:-5px; left:50%;
-    transform:translateX(-50%);
-    width:0;height:0;
-    border-left:5px solid transparent;
-    border-right:5px solid transparent;
-    border-bottom:6px solid var(--panel);
+    font-family:var(--font-heading);
+    font-size:12px;
+    font-style:italic;
+    line-height:1.35;
+    color:var(--ink-dim);
+    border-top:1px solid var(--divider);
+    padding-top:6px;
   }
 
-  a:focus-visible, button:focus-visible, .cbx:focus-visible, .week-tab:focus-visible{
-    outline:2px solid var(--river);
+  a:focus-visible, button:focus-visible, .check-btn:focus-visible, .swap-btn:focus-visible, .tick-btn:focus-visible{
+    outline:2px solid var(--accent);
     outline-offset:2px;
   }
 </style>
@@ -709,65 +593,65 @@
 <div class="celebrate-overlay" id="celebrateOverlay" aria-hidden="true">
   <div class="celebrate-content">
     <svg class="celebrate-bear" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="68" rx="28" ry="26" fill="var(--gold)"/>
-      <circle cx="50" cy="34" r="22" fill="var(--gold)"/>
-      <circle cx="30" cy="16" r="9" fill="var(--gold)"/>
-      <circle cx="70" cy="16" r="9" fill="var(--gold)"/>
-      <circle cx="30" cy="16" r="4.5" fill="var(--gold-dim)"/>
-      <circle cx="70" cy="16" r="4.5" fill="var(--gold-dim)"/>
+      <ellipse cx="50" cy="68" rx="28" ry="26" fill="#A67509"/>
+      <circle cx="50" cy="34" r="22" fill="#A67509"/>
+      <circle cx="30" cy="16" r="9" fill="#A67509"/>
+      <circle cx="70" cy="16" r="9" fill="#A67509"/>
+      <circle cx="30" cy="16" r="4.5" fill="#F6EAD0"/>
+      <circle cx="70" cy="16" r="4.5" fill="#F6EAD0"/>
       <ellipse cx="50" cy="40" rx="11" ry="8" fill="#FFFFFF" opacity="0.85"/>
       <circle cx="43" cy="32" r="2.2" fill="#241C10"/>
       <circle cx="57" cy="32" r="2.2" fill="#241C10"/>
       <circle cx="50" cy="40" r="2" fill="#241C10"/>
       <path d="M44 43q6 5 12 0" stroke="#241C10" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <ellipse cx="20" cy="58" rx="7" ry="9" fill="var(--gold)" transform="rotate(-35 20 58)"/>
-      <ellipse cx="80" cy="58" rx="7" ry="9" fill="var(--gold)" transform="rotate(35 80 58)"/>
-      <ellipse cx="36" cy="90" rx="8" ry="6" fill="var(--gold)"/>
-      <ellipse cx="64" cy="90" rx="8" ry="6" fill="var(--gold)"/>
+      <ellipse cx="20" cy="58" rx="7" ry="9" fill="#A67509" transform="rotate(-35 20 58)"/>
+      <ellipse cx="80" cy="58" rx="7" ry="9" fill="#A67509" transform="rotate(35 80 58)"/>
+      <ellipse cx="36" cy="90" rx="8" ry="6" fill="#A67509"/>
+      <ellipse cx="64" cy="90" rx="8" ry="6" fill="#A67509"/>
     </svg>
-    <div class="celebrate-text">GOOD JOB!</div>
+    <div class="celebrate-text">Good job</div>
   </div>
 </div>
 
 <div class="side-buddy side-buddy-left" aria-hidden="true">
   <div class="buddy-item">
     <svg class="buddy-svg" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="68" rx="28" ry="26" fill="var(--gold)"/>
-      <circle cx="50" cy="34" r="22" fill="var(--gold)"/>
-      <circle cx="30" cy="16" r="9" fill="var(--gold)"/>
-      <circle cx="70" cy="16" r="9" fill="var(--gold)"/>
-      <circle cx="30" cy="16" r="4.5" fill="var(--gold-dim)"/>
-      <circle cx="70" cy="16" r="4.5" fill="var(--gold-dim)"/>
+      <ellipse cx="50" cy="68" rx="28" ry="26" fill="#A67509"/>
+      <circle cx="50" cy="34" r="22" fill="#A67509"/>
+      <circle cx="30" cy="16" r="9" fill="#A67509"/>
+      <circle cx="70" cy="16" r="9" fill="#A67509"/>
+      <circle cx="30" cy="16" r="4.5" fill="#F6EAD0"/>
+      <circle cx="70" cy="16" r="4.5" fill="#F6EAD0"/>
       <ellipse cx="50" cy="40" rx="11" ry="8" fill="#FFFFFF" opacity="0.85"/>
       <circle cx="43" cy="32" r="2.2" fill="#241C10"/>
       <circle cx="57" cy="32" r="2.2" fill="#241C10"/>
       <circle cx="50" cy="40" r="2" fill="#241C10"/>
       <path d="M45 44q5 3 10 0" stroke="#241C10" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <ellipse cx="24" cy="62" rx="7" ry="9" fill="var(--gold)"/>
-      <ellipse cx="76" cy="62" rx="7" ry="9" fill="var(--gold)"/>
-      <ellipse cx="36" cy="90" rx="8" ry="6" fill="var(--gold)"/>
-      <ellipse cx="64" cy="90" rx="8" ry="6" fill="var(--gold)"/>
+      <ellipse cx="24" cy="62" rx="7" ry="9" fill="#A67509"/>
+      <ellipse cx="76" cy="62" rx="7" ry="9" fill="#A67509"/>
+      <ellipse cx="36" cy="90" rx="8" ry="6" fill="#A67509"/>
+      <ellipse cx="64" cy="90" rx="8" ry="6" fill="#A67509"/>
     </svg>
-    <div class="buddy-bubble"><span id="bearBubbleText">You've got this!</span></div>
+    <div class="buddy-caption" id="bearBubbleText">You've got this!</div>
   </div>
   <div class="buddy-item">
     <svg class="buddy-svg" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="68" rx="26" ry="24" fill="var(--panel)"/>
-      <circle cx="50" cy="36" r="20" fill="var(--panel)"/>
-      <circle cx="30" cy="20" r="8" fill="var(--plush-black)"/>
-      <circle cx="70" cy="20" r="8" fill="var(--plush-black)"/>
-      <ellipse cx="39" cy="35" rx="7" ry="8" fill="var(--plush-black)"/>
-      <ellipse cx="61" cy="35" rx="7" ry="8" fill="var(--plush-black)"/>
-      <circle cx="39" cy="35" r="2.3" fill="var(--panel)"/>
-      <circle cx="61" cy="35" r="2.3" fill="var(--panel)"/>
-      <circle cx="50" cy="42" r="2" fill="var(--plush-black)"/>
-      <path d="M45 46q5 3 10 0" stroke="var(--plush-black)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <ellipse cx="24" cy="62" rx="7" ry="9" fill="var(--plush-black)"/>
-      <ellipse cx="76" cy="62" rx="7" ry="9" fill="var(--plush-black)"/>
-      <ellipse cx="37" cy="90" rx="8" ry="6" fill="var(--plush-black)"/>
-      <ellipse cx="63" cy="90" rx="8" ry="6" fill="var(--plush-black)"/>
+      <ellipse cx="50" cy="68" rx="26" ry="24" fill="#FFFFFF"/>
+      <circle cx="50" cy="36" r="20" fill="#FFFFFF"/>
+      <circle cx="30" cy="20" r="8" fill="#2B2B28"/>
+      <circle cx="70" cy="20" r="8" fill="#2B2B28"/>
+      <ellipse cx="39" cy="35" rx="7" ry="8" fill="#2B2B28"/>
+      <ellipse cx="61" cy="35" rx="7" ry="8" fill="#2B2B28"/>
+      <circle cx="39" cy="35" r="2.3" fill="#FFFFFF"/>
+      <circle cx="61" cy="35" r="2.3" fill="#FFFFFF"/>
+      <circle cx="50" cy="42" r="2" fill="#2B2B28"/>
+      <path d="M45 46q5 3 10 0" stroke="#2B2B28" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="24" cy="62" rx="7" ry="9" fill="#2B2B28"/>
+      <ellipse cx="76" cy="62" rx="7" ry="9" fill="#2B2B28"/>
+      <ellipse cx="37" cy="90" rx="8" ry="6" fill="#2B2B28"/>
+      <ellipse cx="63" cy="90" rx="8" ry="6" fill="#2B2B28"/>
     </svg>
-    <div class="buddy-bubble"><span id="pandaBubbleText">Proud of you already.</span></div>
+    <div class="buddy-caption" id="pandaBubbleText">Proud of you already.</div>
   </div>
   <div class="buddy-item">
     <svg class="buddy-svg" viewBox="0 0 100 100">
@@ -775,176 +659,179 @@
       <line x1="18" y1="44" x2="6" y2="45" stroke="#5A2E29" stroke-width="1" stroke-linecap="round"/>
       <line x1="82" y1="41" x2="94" y2="39" stroke="#5A2E29" stroke-width="1" stroke-linecap="round"/>
       <line x1="82" y1="44" x2="94" y2="45" stroke="#5A2E29" stroke-width="1" stroke-linecap="round"/>
-      <ellipse cx="50" cy="68" rx="25" ry="24" fill="var(--plush-pink)"/>
-      <circle cx="50" cy="36" r="19" fill="var(--plush-pink)"/>
-      <path d="M32 22 L26 6 L42 16 Z" fill="var(--plush-pink)"/>
-      <path d="M68 22 L74 6 L58 16 Z" fill="var(--plush-pink)"/>
-      <path d="M32 21 L28.5 11 L38 16 Z" fill="var(--plush-pink-dim)"/>
-      <path d="M68 21 L71.5 11 L62 16 Z" fill="var(--plush-pink-dim)"/>
+      <ellipse cx="50" cy="68" rx="25" ry="24" fill="#EA9F9A"/>
+      <circle cx="50" cy="36" r="19" fill="#EA9F9A"/>
+      <path d="M32 22 L26 6 L42 16 Z" fill="#EA9F9A"/>
+      <path d="M68 22 L74 6 L58 16 Z" fill="#EA9F9A"/>
+      <path d="M32 21 L28.5 11 L38 16 Z" fill="#F7D6D3"/>
+      <path d="M68 21 L71.5 11 L62 16 Z" fill="#F7D6D3"/>
       <ellipse cx="50" cy="41" rx="9" ry="6" fill="#FFFFFF" opacity="0.85"/>
       <circle cx="43" cy="33" r="2" fill="#5A2E29"/>
       <circle cx="57" cy="33" r="2" fill="#5A2E29"/>
       <path d="M50 39 L47 42 L53 42 Z" fill="#5A2E29"/>
       <path d="M50 42q-4 4 -7 2" stroke="#5A2E29" stroke-width="1.3" fill="none" stroke-linecap="round"/>
       <path d="M50 42q4 4 7 2" stroke="#5A2E29" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-      <ellipse cx="23" cy="60" rx="6.5" ry="8.5" fill="var(--plush-pink)"/>
-      <ellipse cx="77" cy="60" rx="6.5" ry="8.5" fill="var(--plush-pink)"/>
-      <ellipse cx="37" cy="89" rx="7.5" ry="5.5" fill="var(--plush-pink)"/>
-      <ellipse cx="63" cy="89" rx="7.5" ry="5.5" fill="var(--plush-pink)"/>
+      <ellipse cx="23" cy="60" rx="6.5" ry="8.5" fill="#EA9F9A"/>
+      <ellipse cx="77" cy="60" rx="6.5" ry="8.5" fill="#EA9F9A"/>
+      <ellipse cx="37" cy="89" rx="7.5" ry="5.5" fill="#EA9F9A"/>
+      <ellipse cx="63" cy="89" rx="7.5" ry="5.5" fill="#EA9F9A"/>
     </svg>
-    <div class="buddy-bubble"><span id="catBubbleText">Small steps, big wins.</span></div>
+    <div class="buddy-caption" id="catBubbleText">Small steps, big wins.</div>
   </div>
 </div>
 
 <div class="side-buddy side-buddy-right" aria-hidden="true">
   <div class="buddy-item">
     <svg class="buddy-svg" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="68" rx="26" ry="25" fill="var(--leaf)"/>
-      <circle cx="50" cy="35" r="21" fill="var(--leaf)"/>
-      <path d="M28 22 L20 4 L38 14 Z" fill="var(--leaf)"/>
-      <path d="M72 22 L80 4 L62 14 Z" fill="var(--leaf)"/>
-      <path d="M28 21 L23.5 10 L34.5 16 Z" fill="var(--leaf-dim)"/>
-      <path d="M72 21 L76.5 10 L65.5 16 Z" fill="var(--leaf-dim)"/>
+      <ellipse cx="50" cy="68" rx="26" ry="25" fill="#3F8C3F"/>
+      <circle cx="50" cy="35" r="21" fill="#3F8C3F"/>
+      <path d="M28 22 L20 4 L38 14 Z" fill="#3F8C3F"/>
+      <path d="M72 22 L80 4 L62 14 Z" fill="#3F8C3F"/>
+      <path d="M28 21 L23.5 10 L34.5 16 Z" fill="#E1EFDB"/>
+      <path d="M72 21 L76.5 10 L65.5 16 Z" fill="#E1EFDB"/>
       <ellipse cx="50" cy="42" rx="10" ry="7" fill="#FFFFFF" opacity="0.85"/>
       <circle cx="43" cy="33" r="2.2" fill="#1B2A16"/>
       <circle cx="57" cy="33" r="2.2" fill="#1B2A16"/>
       <circle cx="50" cy="41" r="1.8" fill="#1B2A16"/>
       <path d="M46 45q4 2.5 8 0" stroke="#1B2A16" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <ellipse cx="25" cy="62" rx="6.5" ry="8.5" fill="var(--leaf)"/>
-      <ellipse cx="75" cy="62" rx="6.5" ry="8.5" fill="var(--leaf)"/>
-      <ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="var(--leaf)"/>
-      <ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="var(--leaf)"/>
+      <ellipse cx="25" cy="62" rx="6.5" ry="8.5" fill="#3F8C3F"/>
+      <ellipse cx="75" cy="62" rx="6.5" ry="8.5" fill="#3F8C3F"/>
+      <ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="#3F8C3F"/>
+      <ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="#3F8C3F"/>
     </svg>
-    <div class="buddy-bubble"><span id="foxBubbleText">One step at a time.</span></div>
+    <div class="buddy-caption" id="foxBubbleText">One step at a time.</div>
   </div>
   <div class="buddy-item">
     <svg class="buddy-svg" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="60" rx="27" ry="30" fill="var(--plush-purple)"/>
-      <path d="M18 30 L30 18 L34 34 Z" fill="var(--plush-purple)"/>
-      <path d="M82 30 L70 18 L66 34 Z" fill="var(--plush-purple)"/>
+      <ellipse cx="50" cy="60" rx="27" ry="30" fill="#AC94D4"/>
+      <path d="M18 30 L30 18 L34 34 Z" fill="#AC94D4"/>
+      <path d="M82 30 L70 18 L66 34 Z" fill="#AC94D4"/>
       <circle cx="37" cy="42" r="13" fill="#FFFFFF"/>
       <circle cx="63" cy="42" r="13" fill="#FFFFFF"/>
       <circle cx="37" cy="42" r="6.5" fill="#2E2440"/>
       <circle cx="63" cy="42" r="6.5" fill="#2E2440"/>
-      <path d="M50 50 L45 58 L55 58 Z" fill="var(--plush-orange)"/>
-      <ellipse cx="20" cy="66" rx="7" ry="10" fill="var(--plush-purple)"/>
-      <ellipse cx="80" cy="66" rx="7" ry="10" fill="var(--plush-purple)"/>
-      <ellipse cx="38" cy="90" rx="7" ry="5" fill="var(--plush-orange)"/>
-      <ellipse cx="62" cy="90" rx="7" ry="5" fill="var(--plush-orange)"/>
+      <path d="M50 50 L45 58 L55 58 Z" fill="#E8952F"/>
+      <ellipse cx="20" cy="66" rx="7" ry="10" fill="#AC94D4"/>
+      <ellipse cx="80" cy="66" rx="7" ry="10" fill="#AC94D4"/>
+      <ellipse cx="38" cy="90" rx="7" ry="5" fill="#E8952F"/>
+      <ellipse cx="62" cy="90" rx="7" ry="5" fill="#E8952F"/>
     </svg>
-    <div class="buddy-bubble"><span id="owlBubbleText">Stronger than yesterday.</span></div>
+    <div class="buddy-caption" id="owlBubbleText">Stronger than yesterday.</div>
   </div>
   <div class="buddy-item">
     <svg class="buddy-svg" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="65" rx="24" ry="28" fill="var(--plush-navy)"/>
+      <ellipse cx="50" cy="65" rx="24" ry="28" fill="#2E3A45"/>
       <ellipse cx="50" cy="68" rx="15" ry="20" fill="#FFFFFF"/>
-      <circle cx="50" cy="34" r="17" fill="var(--plush-navy)"/>
+      <circle cx="50" cy="34" r="17" fill="#2E3A45"/>
       <ellipse cx="50" cy="38" rx="10" ry="9" fill="#FFFFFF"/>
       <circle cx="45" cy="35" r="2" fill="#1A2027"/>
       <circle cx="55" cy="35" r="2" fill="#1A2027"/>
-      <path d="M50 39 L46 43 L54 43 Z" fill="var(--plush-orange)"/>
-      <ellipse cx="22" cy="60" rx="7" ry="14" fill="var(--plush-navy)" transform="rotate(-20 22 60)"/>
-      <ellipse cx="78" cy="60" rx="7" ry="14" fill="var(--plush-navy)" transform="rotate(20 78 60)"/>
-      <ellipse cx="38" cy="92" rx="7" ry="4" fill="var(--plush-orange)"/>
-      <ellipse cx="62" cy="92" rx="7" ry="4" fill="var(--plush-orange)"/>
+      <path d="M50 39 L46 43 L54 43 Z" fill="#E8952F"/>
+      <ellipse cx="22" cy="60" rx="7" ry="14" fill="#2E3A45" transform="rotate(-20 22 60)"/>
+      <ellipse cx="78" cy="60" rx="7" ry="14" fill="#2E3A45" transform="rotate(20 78 60)"/>
+      <ellipse cx="38" cy="92" rx="7" ry="4" fill="#E8952F"/>
+      <ellipse cx="62" cy="92" rx="7" ry="4" fill="#E8952F"/>
     </svg>
-    <div class="buddy-bubble"><span id="penguinBubbleText">Keep going, friend!</span></div>
+    <div class="buddy-caption" id="penguinBubbleText">Keep going, friend!</div>
   </div>
 </div>
 
 <div class="wrap">
 
-  <div class="hero">
-    <p class="eyebrow" id="eyebrow">Race Tracker</p>
+  <header>
+    <p class="kicker">Training Log · Thirteen Weeks</p>
     <h1>Rothman Orthopaedics 8K</h1>
-    <p class="race-meta">Saturday, November 21, 2026 · 11:00 AM start · 25th &amp; Kelly Drive, Philadelphia</p>
-    <div class="hero-row">
-      <div>
-        <div class="countdown-num" id="countdownNum">—</div>
-        <div class="countdown-label" id="countdownLabel">days to go</div>
-      </div>
-      <div class="progress-block">
-        <div class="progress-label"><span>OVERALL PROGRESS</span><span id="progressPct">0%</span></div>
-        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      </div>
+    <p class="subtitle">Saturday, November 21, 2026 · 11:00 AM start<br>25th &amp; Kelly Drive, Philadelphia</p>
+  </header>
+
+  <div class="stat-strip">
+    <div class="stat-count">
+      <div class="countdown-num" id="countdownNum">—</div>
+      <div class="countdown-label" id="countdownLabel">days to go</div>
+    </div>
+    <div class="stat-progress">
+      <div class="progress-label">Sessions done</div>
+      <div class="progress-count" id="progressCount">0 / 0<span id="progressPct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
     </div>
   </div>
 
-  <div class="week-tabs" id="weekTabs"></div>
+  <nav class="week-nav">
+    <button type="button" class="week-nav-btn" id="prevWeekBtn" aria-label="Previous week">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="week-center">
+      <div class="week-title" id="weekTitle">Week 1 <span>/ 13</span></div>
+      <div class="week-phase" id="weekPhase">—</div>
+      <div class="week-range" id="weekRange">—</div>
+    </div>
+    <button type="button" class="week-nav-btn" id="nextWeekBtn" aria-label="Next week">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </nav>
 
-  <div class="panel">
-    <div class="panel-head">
-      <div class="panel-head-left">
-        <p class="panel-phase" id="panelPhase">—</p>
-        <h2 id="panelTitle">Week 1</h2>
-        <p class="panel-range" id="panelRange">—</p>
-      </div>
-      <div class="head-actions">
-        <button class="icon-btn" id="resetBtn" title="Reset this week's order">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 4v5h5"/></svg>
-          Reset
-        </button>
-      </div>
-    </div>
-    <div class="week-quote">
-      <div class="quote-mascot">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="7" r="4"/>
-          <circle cx="10.4" cy="6.6" r="0.5" fill="currentColor" stroke="none"/>
-          <circle cx="13.6" cy="6.6" r="0.5" fill="currentColor" stroke="none"/>
-          <path d="M10.2 8.6q1.8 1 3.6 0"/>
-          <path d="M8 13.2c0-1.6 1.8-2.2 4-2.2s4 .6 4 2.2v5c0 .9-.7 1.6-1.6 1.6H9.6c-.9 0-1.6-.7-1.6-1.6z"/>
-          <path d="M8.3 14.5 6.2 12.8"/>
-          <path d="M15.7 14.5 18.3 10"/>
-          <circle cx="18.7" cy="9.2" r="1" fill="currentColor" stroke="none"/>
-          <path d="M9.8 19.8v2.2"/>
-          <path d="M14.2 19.8v2.2"/>
-        </svg>
-      </div>
-      <div class="quote-bubble"><span id="weekQuoteText"></span></div>
-    </div>
-    <div class="swap-hint" id="swapHint">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-      <span>Tap the handle on two days to swap their workouts.</span>
-    </div>
-    <div class="day-list" id="dayList"></div>
+  <div class="week-ticks" id="weekTicks"></div>
+
+  <figure class="quote-figure">
+    <span class="quote-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="7" r="4"/>
+        <circle cx="10.4" cy="6.6" r="0.5" fill="currentColor" stroke="none"/>
+        <circle cx="13.6" cy="6.6" r="0.5" fill="currentColor" stroke="none"/>
+        <path d="M10.2 8.6q1.8 1 3.6 0"/>
+        <path d="M8 13.2c0-1.6 1.8-2.2 4-2.2s4 .6 4 2.2v5c0 .9-.7 1.6-1.6 1.6H9.6c-.9 0-1.6-.7-1.6-1.6z"/>
+        <path d="M8.3 14.5 6.2 12.8"/>
+        <path d="M15.7 14.5 18.3 10"/>
+        <circle cx="18.7" cy="9.2" r="1" fill="currentColor" stroke="none"/>
+        <path d="M9.8 19.8v2.2"/>
+        <path d="M14.2 19.8v2.2"/>
+      </svg>
+    </span>
+    <blockquote class="quote-text" id="weekQuoteText"></blockquote>
+  </figure>
+
+  <div class="section-head">
+    <h2>This week</h2>
+    <button type="button" class="btn-outline" id="resetBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 4v5h5"/></svg>
+      Reset week
+    </button>
   </div>
+  <p class="swap-hint" id="swapHint">Tap the arrows on two days to swap their workouts.</p>
 
-  <div class="panel thought-panel">
-    <div class="panel-head">
-      <div class="panel-head-left">
-        <p class="panel-phase">Mental Reset</p>
-        <h2>Thought Dump</h2>
-        <p class="panel-range">Write down a negative thought, hit Enter, and let the bear eat it.</p>
-      </div>
-    </div>
+  <div class="day-list" id="dayList"></div>
+
+  <section class="thought-section">
+    <p class="kicker" style="margin-bottom:6px;">Mental Reset</p>
+    <h3 style="margin:0 0 4px;font-family:var(--font-heading);font-weight:400;font-size:24px;">Thought Dump</h3>
+    <p class="subtitle" style="margin:0 0 14px;">Write down a negative thought, hit Enter, and let the bear eat it. Nothing here is saved.</p>
     <div class="thought-body">
       <div class="thought-input-wrap" id="thoughtInputWrap">
         <input type="text" id="thoughtInput" class="thought-input" placeholder="Type it out…" maxlength="140" autocomplete="off">
       </div>
       <div class="eater-bear-wrap">
-        <span class="munch-text" id="munchText">MUNCH!</span>
+        <span class="munch-text" id="munchText">MUNCH</span>
         <svg id="eaterBear" class="eater-bear" viewBox="0 0 100 100">
-          <ellipse cx="50" cy="70" rx="26" ry="24" fill="var(--gold)"/>
-          <circle cx="50" cy="36" r="20" fill="var(--gold)"/>
-          <circle cx="32" cy="19" r="8" fill="var(--gold)"/>
-          <circle cx="68" cy="19" r="8" fill="var(--gold)"/>
-          <circle cx="32" cy="19" r="4" fill="var(--gold-dim)"/>
-          <circle cx="68" cy="19" r="4" fill="var(--gold-dim)"/>
+          <ellipse cx="50" cy="70" rx="26" ry="24" fill="#A67509"/>
+          <circle cx="50" cy="36" r="20" fill="#A67509"/>
+          <circle cx="32" cy="19" r="8" fill="#A67509"/>
+          <circle cx="68" cy="19" r="8" fill="#A67509"/>
+          <circle cx="32" cy="19" r="4" fill="#F6EAD0"/>
+          <circle cx="68" cy="19" r="4" fill="#F6EAD0"/>
           <ellipse cx="50" cy="42" rx="10" ry="7" fill="#FFFFFF" opacity="0.85"/>
           <circle cx="44" cy="34" r="2" fill="#241C10"/>
           <circle cx="56" cy="34" r="2" fill="#241C10"/>
           <circle cx="50" cy="41" r="1.8" fill="#241C10"/>
           <path class="mouth-closed" d="M45 45q5 3 10 0" stroke="#241C10" stroke-width="1.5" fill="none" stroke-linecap="round"/>
           <ellipse class="mouth-open" cx="50" cy="47" rx="7" ry="6" fill="#241C10"/>
-          <ellipse cx="22" cy="64" rx="6" ry="8" fill="var(--gold)"/>
-          <ellipse cx="78" cy="64" rx="6" ry="8" fill="var(--gold)"/>
+          <ellipse cx="22" cy="64" rx="6" ry="8" fill="#A67509"/>
+          <ellipse cx="78" cy="64" rx="6" ry="8" fill="#A67509"/>
         </svg>
       </div>
     </div>
-  </div>
+  </section>
 
-  <p class="footnote" id="loadingNote">Loading your saved progress…</p>
+  <p class="footnote" id="footnote">Loading your saved progress…</p>
 </div>
 
 <script>
@@ -1108,7 +995,7 @@
   ];
 
   /* ---------------- State ---------------- */
-  var state = null;              // { "1":[slot,...7], "2":[...], ... }
+  var state = null;
   var currentWeek = 1;
   var selectedIdx = null;
   var storageOK = true;
@@ -1131,7 +1018,6 @@
       var raw = localStorage.getItem(STORAGE_KEY);
       if(raw){
         state = JSON.parse(raw);
-        // fill in any missing weeks (safety, in case plan changes)
         WEEKS.forEach(function(w){ if(!state[w.n]) state[w.n] = cloneDefault(w.n); });
       } else {
         state = buildDefaultState();
@@ -1153,7 +1039,6 @@
 
   /* ---------------- Helpers ---------------- */
   function startOfDay(dt){ var x = new Date(dt); x.setHours(0,0,0,0); return x; }
-
   function weekStart(w){ return new Date(w.start + 'T00:00:00'); }
   function weekEnd(w){ var e = weekStart(w); e.setDate(e.getDate()+6); return e; }
 
@@ -1181,24 +1066,18 @@
     return WEEKS[WEEKS.length-1].n;
   }
 
-  function iconFor(type){
-    if(type==='run') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="5" r="2"/><path d="M4 20l4-5 3 2 3-4"/><path d="M9 15l2-6 5 2 3 5"/><path d="M13 9l-3-2-3 2"/></svg>';
-    if(type==='gym') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="12" x2="18" y2="12"/><rect x="3" y="9" width="3" height="6" rx="1"/><rect x="18" y="9" width="3" height="6" rx="1"/><rect x="1" y="10.5" width="2" height="3" rx="0.5"/><rect x="21" y="10.5" width="2" height="3" rx="0.5"/></svg>';
-    if(type==='race') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4"/><path d="M4 4h11l-2 3.5L15 11H4"/></svg>';
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
-  }
-
   function isCheckable(type){ return type !== 'rest'; }
 
   /* ---------------- Render ---------------- */
-  function renderHero(){
+  function renderStats(){
     var today = startOfDay(new Date());
     var diff = Math.round((startOfDay(RACE_DATE) - today) / 86400000);
     var numEl = document.getElementById('countdownNum');
     var labEl = document.getElementById('countdownLabel');
-    if(diff > 0){ numEl.textContent = diff; labEl.textContent = diff===1 ? 'day to go' : 'days to go'; }
-    else if(diff === 0){ numEl.textContent = '🏁'; labEl.textContent = 'race day!'; }
-    else { numEl.textContent = '🎉'; labEl.textContent = 'race complete'; }
+    if(diff > 1){ numEl.textContent = diff; labEl.textContent = 'days to go'; }
+    else if(diff === 1){ numEl.textContent = diff; labEl.textContent = 'day to go'; }
+    else if(diff === 0){ numEl.textContent = '0'; labEl.textContent = 'race day'; }
+    else { numEl.textContent = '—'; labEl.textContent = 'race complete'; }
 
     var totalCheckable = 0, totalDone = 0;
     WEEKS.forEach(function(w){
@@ -1207,79 +1086,106 @@
       });
     });
     var pct = totalCheckable ? Math.round(totalDone/totalCheckable*100) : 0;
-    document.getElementById('progressPct').textContent = totalDone + ' / ' + totalCheckable + ' · ' + pct + '%';
+    document.getElementById('progressCount').innerHTML = totalDone + ' / ' + totalCheckable + '<span id="progressPct">' + pct + '%</span>';
     document.getElementById('progressFill').style.width = pct + '%';
   }
 
-  function renderTabs(){
+  function renderNav(){
+    var w = WEEKS[currentWeek-1];
     var todayWeek = determineInitialWeek();
-    var wrap = document.getElementById('weekTabs');
+    document.getElementById('weekTitle').innerHTML = 'Week ' + w.n + ' <span>/ 13</span>';
+    document.getElementById('weekPhase').textContent = w.phase;
+    document.getElementById('weekRange').textContent = formatRange(w) + (w.n === todayWeek ? ' · this week' : '');
+    document.getElementById('prevWeekBtn').disabled = currentWeek <= 1;
+    document.getElementById('nextWeekBtn').disabled = currentWeek >= WEEKS.length;
+  }
+
+  function renderTicks(){
+    var todayWeek = determineInitialWeek();
+    var wrap = document.getElementById('weekTicks');
     wrap.innerHTML = '';
     WEEKS.forEach(function(w){
       var slots = state[w.n];
       var checkable = slots.filter(function(s){return isCheckable(s.type);});
       var done = checkable.filter(function(s){return s.done;}).length;
-      var pct = checkable.length ? (done/checkable.length*100) : 0;
+      var full = checkable.length && done === checkable.length;
+      var isCur = w.n === currentWeek;
+      var h = isCur ? 14 : (full ? 10 : 6);
+      var bg = full ? 'var(--accent)' : (isCur ? 'var(--accent-400)' : 'var(--neutral-300)');
 
       var btn = document.createElement('button');
-      btn.className = 'week-tab' + (w.n===currentWeek ? ' active' : '') + (w.n===todayWeek ? ' current-marker' : '');
-      btn.setAttribute('type','button');
-      btn.innerHTML = '<span class="wk-num">W' + w.n + '</span><span class="wk-phase">' + w.phase + '</span><span class="wk-fill" style="width:' + pct + '%"></span>';
-      btn.addEventListener('click', function(){
-        currentWeek = w.n;
-        selectedIdx = null;
-        renderAll();
-      });
+      btn.type = 'button';
+      btn.className = 'tick-btn';
+      btn.title = 'Week ' + w.n + ' · ' + w.phase + (w.n === todayWeek ? ' · this week' : '');
+      btn.setAttribute('aria-label', btn.title);
+      var bar = document.createElement('span');
+      bar.className = 'tick-bar' + (isCur ? ' current' : '');
+      bar.style.height = h + 'px';
+      bar.style.background = bg;
+      btn.appendChild(bar);
+      btn.addEventListener('click', function(wn){
+        return function(){ goWeek(wn); };
+      }(w.n));
       wrap.appendChild(btn);
     });
-    var activeTab = wrap.querySelector('.week-tab.active');
-    if(activeTab) activeTab.scrollIntoView({block:'nearest', inline:'center'});
   }
 
-  function renderPanel(){
+  function renderQuote(){
     var w = WEEKS[currentWeek-1];
-    document.getElementById('panelPhase').textContent = w.phase;
-    document.getElementById('panelTitle').textContent = 'Week ' + w.n;
-    document.getElementById('panelRange').textContent = formatRange(w);
     document.getElementById('weekQuoteText').textContent = w.quote;
+  }
 
+  function renderSwapHint(){
+    document.getElementById('swapHint').textContent = selectedIdx === null
+      ? 'Tap the arrows on two days to swap their workouts.'
+      : 'Now tap the arrows on the day you want to swap it with.';
+  }
+
+  function renderDays(){
+    var w = WEEKS[currentWeek-1];
     var list = document.getElementById('dayList');
-    list.className = 'day-list';
     list.innerHTML = '';
-
     var slots = state[currentWeek];
-    slots.forEach(function(slot, idx){
-      var card = document.createElement('div');
-      var classes = ['day-card'];
-      if(slot.type==='rest') classes.push('rest-card');
-      if(slot.type==='race') classes.push('race-card');
-      if(slot.done && slot.type!=='rest') classes.push('done-card');
-      if(selectedIdx===idx) classes.push('selected');
-      card.className = classes.join(' ');
 
+    slots.forEach(function(slot, idx){
       var dt = dateForSlot(w, idx);
       var checkable = isCheckable(slot.type);
-      var cbxClass = slot.type==='race' ? 'cbx race-cbx' : 'cbx';
-      var handleSelected = selectedIdx===idx;
+      var selected = selectedIdx === idx;
 
-      card.innerHTML =
-        '<div class="day-date"><span class="dow">' + DAY_LABELS[idx] + '</span><span class="dnum">' + dt.getDate() + '</span></div>' +
-        '<div class="type-icon ' + slot.type + '">' + iconFor(slot.type) + (handleSelected ? '<span class="swap-badge">1</span>' : '') + '</div>' +
+      var row = document.createElement('div');
+      var classes = ['day-row'];
+      if(selected) classes.push('selected');
+      if(slot.done || slot.type === 'rest') classes.push('dim');
+      row.className = classes.join(' ');
+
+      var kickerLabel = slot.type === 'race' ? 'Race Day' : (slot.type === 'run' ? 'Run' : (slot.type === 'gym' ? 'Gym' : 'Rest'));
+
+      row.innerHTML =
+        '<div class="day-date"><div class="dow">' + DAY_LABELS[idx] + '</div><div class="dnum">' + dt.getDate() + '</div></div>' +
         '<div class="day-body">' +
+          '<div class="day-kicker">' + kickerLabel + '</div>' +
           '<p class="day-title">' + slot.title + (slot.duration ? '<span class="dur">' + slot.duration + '</span>' : '') + '</p>' +
           (slot.detail ? '<p class="day-detail' + (slot.pattern ? ' pattern-detail' : '') + '">' + slot.detail + '</p>' : '') +
         '</div>' +
-        '<div class="checkbox-wrap">' +
-          (checkable ? '<input type="checkbox" class="' + cbxClass + '" ' + (slot.done?'checked':'') + ' aria-label="Mark ' + slot.title + ' complete">' : '') +
-        '</div>' +
-        '<button type="button" class="handle-btn' + (handleSelected ? ' selected' : '') + '" title="Tap to select for swapping" aria-label="Select ' + DAY_LABELS[idx] + ' to swap with another day">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>' +
-        '</button>';
+        '<div class="day-actions">' +
+          (checkable ?
+            '<button type="button" class="check-btn" aria-label="Mark ' + slot.title + (slot.done ? ' not done' : ' complete') + '" aria-pressed="' + (!!slot.done) + '">' +
+              '<span class="check-box' + (slot.done ? ' checked' : '') + '">' +
+                (slot.done ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>' : '') +
+              '</span>' +
+            '</button>'
+          : '') +
+          '<button type="button" class="swap-btn' + (selected ? ' active' : '') + '" title="Tap two days to swap their workouts" aria-label="Select ' + DAY_LABELS[idx] + ' to swap with another day">' +
+            (selected ?
+              '<span class="swap-label">SWAP</span>' :
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M7 8h13l-3-3"/><path d="M17 16H4l3 3"/></svg>'
+            ) +
+          '</button>' +
+        '</div>';
 
       if(checkable){
-        var cbx = card.querySelector('.cbx');
-        cbx.addEventListener('click', function(e){
-          e.stopPropagation();
+        var checkBtn = row.querySelector('.check-btn');
+        checkBtn.addEventListener('click', function(){
           slot.done = !slot.done;
           if(slot.done) celebrate();
           saveState();
@@ -1287,11 +1193,10 @@
         });
       }
 
-      var handle = card.querySelector('.handle-btn');
-      handle.addEventListener('click', function(e){
-        e.stopPropagation();
-        if(selectedIdx===null){ selectedIdx = idx; renderPanel(); return; }
-        if(selectedIdx===idx){ selectedIdx = null; renderPanel(); return; }
+      var swapBtn = row.querySelector('.swap-btn');
+      swapBtn.addEventListener('click', function(){
+        if(selectedIdx === null){ selectedIdx = idx; renderAll(); return; }
+        if(selectedIdx === idx){ selectedIdx = null; renderAll(); return; }
         var arr = state[currentWeek];
         var tmp = arr[selectedIdx];
         arr[selectedIdx] = arr[idx];
@@ -1301,21 +1206,15 @@
         renderAll();
       });
 
-      list.appendChild(card);
+      list.appendChild(row);
     });
   }
 
-  var celebrateTimeout = null;
-  function celebrate(){
-    var overlay = document.getElementById('celebrateOverlay');
-    if(!overlay) return;
-    overlay.classList.remove('show');
-    void overlay.offsetWidth; // force reflow so the animation restarts on rapid re-triggers
-    overlay.classList.add('show');
-    clearTimeout(celebrateTimeout);
-    celebrateTimeout = setTimeout(function(){
-      overlay.classList.remove('show');
-    }, 1600);
+  function renderFootnote(){
+    var el = document.getElementById('footnote');
+    el.textContent = storageOK
+      ? 'Progress saves in this browser. Checkmarks and swaps persist; nothing is sent anywhere.'
+      : 'Your browser is blocking saved progress (e.g. private/incognito mode) — checkmarks won\'t persist here.';
   }
 
   var BUDDY_TEXT_IDS = [
@@ -1335,13 +1234,41 @@
   }
 
   function renderAll(){
-    renderHero();
-    renderTabs();
-    renderPanel();
+    renderStats();
+    renderNav();
+    renderTicks();
+    renderQuote();
+    renderSwapHint();
+    renderDays();
+    renderFootnote();
     updateSideBuddies();
   }
 
+  function goWeek(n){
+    if(n < 1 || n > WEEKS.length) return;
+    currentWeek = n;
+    selectedIdx = null;
+    renderAll();
+  }
+
+  /* ---------------- Celebrate ---------------- */
+  var celebrateTimeout = null;
+  function celebrate(){
+    var overlay = document.getElementById('celebrateOverlay');
+    if(!overlay) return;
+    overlay.classList.remove('show');
+    void overlay.offsetWidth;
+    overlay.classList.add('show');
+    clearTimeout(celebrateTimeout);
+    celebrateTimeout = setTimeout(function(){
+      overlay.classList.remove('show');
+    }, 1600);
+  }
+
   /* ---------------- Controls ---------------- */
+  document.getElementById('prevWeekBtn').addEventListener('click', function(){ goWeek(currentWeek - 1); });
+  document.getElementById('nextWeekBtn').addEventListener('click', function(){ goWeek(currentWeek + 1); });
+
   document.getElementById('resetBtn').addEventListener('click', function(){
     var ok = window.confirm('Reset Week ' + currentWeek + ' to its default order? This will also clear checkmarks for this week.');
     if(!ok) return;
@@ -1352,7 +1279,6 @@
   });
 
   /* ---------------- Thought Dump ---------------- */
-  // Nothing typed here is ever saved to storage or sent anywhere — it just gets "eaten" and discarded.
   var thoughtInput = document.getElementById('thoughtInput');
   var thoughtWrap = document.getElementById('thoughtInputWrap');
   var eaterBear = document.getElementById('eaterBear');
@@ -1395,13 +1321,7 @@
   (function init(){
     loadState();
     currentWeek = determineInitialWeek();
-    document.getElementById('loadingNote').style.display = 'none';
     renderAll();
-    if(!storageOK){
-      var note = document.getElementById('loadingNote');
-      note.textContent = 'Note: your browser is blocking saved progress (e.g. private/incognito mode) — checkmarks won\'t persist here.';
-      note.style.display = 'block';
-    }
   })();
 
 })();
