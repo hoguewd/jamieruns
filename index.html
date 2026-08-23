@@ -403,6 +403,16 @@
     margin:2px 0 0;
     line-height:1.4;
   }
+  .day-detail.pattern-detail{
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--river);
+    background:var(--river-dim);
+    padding:7px 11px;
+    border-radius:8px;
+    margin-top:6px;
+    line-height:1.45;
+  }
   .race-card .day-title .dur{color:var(--gold);}
   .race-card .type-icon{position:relative;}
 
@@ -943,8 +953,8 @@
   /* ---------------- Plan data ---------------- */
   var DAY_LABELS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 
-  function d(type,title,duration,detail){
-    return {type:type,title:title,duration:duration||'',detail:detail||''};
+  function d(type,title,duration,detail,isPattern){
+    return {type:type,title:title,duration:duration||'',detail:detail||'',pattern:!!isPattern};
   }
 
   var GYM_DEFAULT = 'Strength / cross-training, your choice';
@@ -955,41 +965,41 @@
     { n:1, start:'2026-08-24', phase:'Base Building',
       quote:'"Nobody\u2019s coming to lace up your shoes for you. Get out the door anyway."',
       slots:[
-      d('run','Run 1 · Easy','25 min','4 min run / 1 min walk'),
+      d('run','Run 1 · Easy','25 min','Run 4 minutes, then walk 1 minute. Repeat that cycle until the 25 minutes is up.',true),
       gym(), rest(),
-      d('run','Run 2 · Easy','30 min','4 min run / 1 min walk'),
+      d('run','Run 2 · Easy','30 min','Run 4 minutes, then walk 1 minute. Repeat that cycle until the 30 minutes is up.',true),
       gym(),
-      d('run','Run 3 · Long','30 min','4 min run / 1 min walk'),
+      d('run','Run 3 · Long','30 min','Run 4 minutes, then walk 1 minute. Repeat that cycle until the 30 minutes is up.',true),
       gym()
     ]},
     { n:2, start:'2026-08-31', phase:'Base Building',
       quote:'"Comfortable is where progress goes to die. Get uncomfortable, one minute at a time."',
       slots:[
-      d('run','Run 1 · Easy','25 min','5 min run / 1 min walk'),
+      d('run','Run 1 · Easy','25 min','Run 5 minutes, then walk 1 minute. Repeat that cycle until the 25 minutes is up.',true),
       gym(), rest(),
-      d('run','Run 2 · Easy','30 min','5 min run / 1 min walk'),
+      d('run','Run 2 · Easy','30 min','Run 5 minutes, then walk 1 minute. Repeat that cycle until the 30 minutes is up.',true),
       gym(),
-      d('run','Run 3 · Long','35 min','5 min run / 1 min walk'),
+      d('run','Run 3 · Long','35 min','Run 5 minutes, then walk 1 minute. Repeat that cycle until the 35 minutes is up.',true),
       gym()
     ]},
     { n:3, start:'2026-09-07', phase:'Base Building',
       quote:'"That first taste of hard effort? Get used to it. Comfortable never finished anything."',
       slots:[
-      d('run','Run 1 · Easy','30 min','8 min run / 1 min walk'),
+      d('run','Run 1 · Easy','30 min','Run 8 minutes, then walk 1 minute. Repeat that cycle until the 30 minutes is up.',true),
       gym(), rest(),
-      d('run','Run 2 · Tempo preview','30 min','8 min run / 1 min walk + two 1-min "comfortably hard" pickups within the run segments'),
+      d('run','Run 2 · Tempo preview','30 min','Run 8 minutes, walk 1 minute \u2014 repeat as usual. But during two of those run segments, pick up to a "comfortably hard" effort for 1 minute, then ease back to easy pace for the rest of that segment.',true),
       gym(),
-      d('run','Run 3 · Long','40 min','8 min run / 1 min walk'),
+      d('run','Run 3 · Long','40 min','Run 8 minutes, then walk 1 minute. Repeat that cycle until the 40 minutes is up.',true),
       gym()
     ]},
     { n:4, start:'2026-09-14', phase:'Cutback',
       quote:'"Backing off isn\u2019t weak. It\u2019s the discipline to build instead of break yourself down."',
       slots:[
-      d('run','Run 1 · Easy','25 min','8 min run / 1 min walk'),
+      d('run','Run 1 · Easy','25 min','Run 8 minutes, then walk 1 minute. Repeat that cycle until the 25 minutes is up.',true),
       gym(), rest(),
-      d('run','Run 2 · Easy','25 min','8 min run / 1 min walk'),
+      d('run','Run 2 · Easy','25 min','Run 8 minutes, then walk 1 minute. Repeat that cycle until the 25 minutes is up.',true),
       gym(),
-      d('run','Run 3 · Long','30 min','Same pattern as Week 3 — lower volume, not lower intensity'),
+      d('run','Run 3 · Long','30 min','Same 8 min run / 1 min walk pattern as Run 1 and Run 2 this week \u2014 repeat until the 30 minutes is up. Lower total volume, not lower intensity.',true),
       gym()
     ]},
     { n:5, start:'2026-09-21', phase:'Build Phase',
@@ -1106,7 +1116,7 @@
   function cloneDefault(weekN){
     var w = WEEKS[weekN-1];
     return w.slots.map(function(s){
-      return {type:s.type, title:s.title, duration:s.duration, detail:s.detail, done:false};
+      return {type:s.type, title:s.title, duration:s.duration, detail:s.detail, pattern:!!s.pattern, done:false};
     });
   }
 
@@ -1257,7 +1267,7 @@
         '<div class="type-icon ' + slot.type + '">' + iconFor(slot.type) + (handleSelected ? '<span class="swap-badge">1</span>' : '') + '</div>' +
         '<div class="day-body">' +
           '<p class="day-title">' + slot.title + (slot.duration ? '<span class="dur">' + slot.duration + '</span>' : '') + '</p>' +
-          (slot.detail ? '<p class="day-detail">' + slot.detail + '</p>' : '') +
+          (slot.detail ? '<p class="day-detail' + (slot.pattern ? ' pattern-detail' : '') + '">' + slot.detail + '</p>' : '') +
         '</div>' +
         '<div class="checkbox-wrap">' +
           (checkable ? '<input type="checkbox" class="' + cbxClass + '" ' + (slot.done?'checked':'') + ' aria-label="Mark ' + slot.title + ' complete">' : '') +
