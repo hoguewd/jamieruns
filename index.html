@@ -471,15 +471,17 @@
   }
   .munch-text{
     position:absolute;
-    top:-14px; left:50%;
+    top:-40px; left:50%;
     transform:translateX(-50%);
+    width:150px;
+    text-align:center;
     font-family:var(--font-heading);
     font-weight:700;
-    font-size:14px;
-    letter-spacing:0.08em;
+    font-size:13px;
+    line-height:1.25;
+    letter-spacing:0.06em;
     color:var(--accent-700);
     opacity:0;
-    white-space:nowrap;
     pointer-events:none;
   }
   .munch-text.show{animation:munch-pop 0.6s ease-out;}
@@ -1354,6 +1356,7 @@
   var eaterBear = document.getElementById('eaterBear');
   var munchText = document.getElementById('munchText');
   var feedBearTimeout = null;
+  var feedBearTimeout2 = null;
 
   function feedBear(){
     thoughtWrap.classList.remove('eaten');
@@ -1364,16 +1367,26 @@
     void eaterBear.offsetWidth;
     eaterBear.classList.add('chomping');
 
+    munchText.textContent = 'MUNCH';
     munchText.classList.remove('show');
     void munchText.offsetWidth;
     munchText.classList.add('show');
 
     clearTimeout(feedBearTimeout);
+    clearTimeout(feedBearTimeout2);
     feedBearTimeout = setTimeout(function(){
-      thoughtInput.value = '';
-      thoughtWrap.classList.remove('eaten');
-      eaterBear.classList.remove('chomping');
+      munchText.textContent = 'BAD THOUGHTS BE GONE';
       munchText.classList.remove('show');
+      void munchText.offsetWidth;
+      munchText.classList.add('show');
+
+      feedBearTimeout2 = setTimeout(function(){
+        thoughtInput.value = '';
+        thoughtWrap.classList.remove('eaten');
+        eaterBear.classList.remove('chomping');
+        munchText.classList.remove('show');
+        munchText.textContent = 'MUNCH';
+      }, 950);
     }, 620);
   }
 
