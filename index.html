@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rothman Orthopaedics 8K — Training Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#10161A;
+    --panel:#1B252B;
+    --panel-alt:#212D34;
+    --panel-border:#2B3840;
+    --ink:#EDEFE9;
+    --ink-dim:#93A6A1;
+    --ink-faint:#5E6E6A;
+    --river:#4FA8C9;
+    --river-dim:#2A4C58;
+    --rust:#E08A3E;
+    --rust-dim:#4A3623;
+    --leaf:#7EBF6A;
+    --leaf-dim:#2C3D28;
+    --gold:#E8B84B;
+    --gold-dim:#4A3B1D;
+    --grey:#8A9490;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:720px;
+    margin:0 auto;
+    padding:20px 16px 60px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:linear-gradient(160deg,var(--panel) 0%, #161F24 100%);
+    border:1px solid var(--panel-border);
+    border-radius:var(--radius);
+    padding:22px 22px 20px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    top:-40%; right:-15%;
+    width:260px; height:260px;
+    background:radial-gradient(circle, rgba(79,168,201,0.16) 0%, rgba(79,168,201,0) 70%);
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--river);
+    margin:0 0 6px;
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(20px,5vw,26px);
+    font-weight:700;
+    margin:0 0 8px;
+    line-height:1.15;
+  }
+  .race-meta{
+    font-size:13px;
+    color:var(--ink-dim);
+    margin:0 0 18px;
+    line-height:1.5;
+  }
+  .hero-row{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .countdown-num{
+    font-family:'JetBrains Mono',monospace;
+    font-size:clamp(34px,10vw,46px);
+    font-weight:700;
+    color:var(--gold);
+    line-height:1;
+  }
+  .countdown-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    margin-top:4px;
+  }
+  .progress-block{
+    flex:1;
+    min-width:180px;
+  }
+  .progress-label{
+    display:flex;
+    justify-content:space-between;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--ink-faint);
+    margin-bottom:6px;
+    letter-spacing:0.04em;
+  }
+  .progress-track{
+    height:8px;
+    border-radius:999px;
+    background:var(--panel-alt);
+    overflow:hidden;
+    border:1px solid var(--panel-border);
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--leaf), var(--river));
+    border-radius:999px;
+    transition:width 0.4s ease;
+  }
+
+  /* ---------- Week Tabs ---------- */
+  .week-tabs{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:18px 2px 6px;
+    scroll-snap-type:x proximity;
+  }
+  .week-tabs::-webkit-scrollbar{height:5px;}
+  .week-tabs::-webkit-scrollbar-thumb{background:var(--panel-border);border-radius:4px;}
+  .week-tab{
+    flex:0 0 auto;
+    scroll-snap-align:start;
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:10px;
+    padding:8px 12px 10px;
+    cursor:pointer;
+    text-align:left;
+    min-width:56px;
+    position:relative;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  .week-tab:hover{background:var(--panel-alt);}
+  .week-tab .wk-num{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:14px;
+    color:var(--ink);
+    display:block;
+  }
+  .week-tab .wk-phase{
+    font-size:9px;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    display:block;
+    margin-top:2px;
+    white-space:nowrap;
+  }
+  .week-tab .wk-fill{
+    position:absolute;
+    left:0; bottom:0;
+    height:3px;
+    background:var(--leaf);
+    border-radius:0 0 10px 10px;
+    transition:width 0.3s ease;
+  }
+  .week-tab.active{
+    border-color:var(--river);
+    background:var(--river-dim);
+    box-shadow:0 0 0 1px var(--river) inset;
+  }
+  .week-tab.current-marker::after{
+    content:"●";
+    position:absolute;
+    top:6px; right:7px;
+    color:var(--gold);
+    font-size:8px;
+  }
+
+  /* ---------- Week Panel ---------- */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:var(--radius);
+    margin-top:14px;
+    overflow:hidden;
+  }
+  .panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:16px 18px 14px;
+    border-bottom:1px solid var(--panel-border);
+    flex-wrap:wrap;
+  }
+  .panel-head-left .panel-phase{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--rust);
+    margin:0 0 3px;
+  }
+  .panel-head-left h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:17px;
+    margin:0;
+    font-weight:600;
+  }
+  .panel-head-left .panel-range{
+    font-size:12px;
+    color:var(--ink-dim);
+    margin-top:2px;
+  }
+  .head-actions{
+    display:flex;
+    gap:8px;
+    flex-shrink:0;
+  }
+  .icon-btn{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    background:var(--panel-alt);
+    border:1px solid var(--panel-border);
+    color:var(--ink-dim);
+    font-family:'Manrope',sans-serif;
+    font-size:12px;
+    font-weight:600;
+    padding:7px 11px;
+    border-radius:9px;
+    cursor:pointer;
+    transition:all 0.15s ease;
+  }
+  .icon-btn:hover{color:var(--ink);border-color:var(--river);}
+  .icon-btn.active{
+    background:var(--river-dim);
+    border-color:var(--river);
+    color:var(--ink);
+  }
+  .icon-btn svg{width:14px;height:14px;flex-shrink:0;}
+
+  .week-quote{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    font-style:italic;
+    color:var(--ink);
+    background:var(--rust-dim);
+    border-bottom:1px solid var(--panel-border);
+    border-left:3px solid var(--rust);
+    padding:12px 18px;
+    line-height:1.4;
+  }
+
+  .swap-hint{
+    font-size:11.5px;
+    color:var(--ink-faint);
+    padding:8px 18px;
+    border-bottom:1px solid var(--panel-border);
+    display:flex;
+    align-items:center;
+    gap:7px;
+  }
+  .swap-hint svg{width:12px;height:12px;flex-shrink:0;color:var(--ink-faint);}
+
+  /* ---------- Day Cards ---------- */
+  .day-list{padding:8px;}
+  .day-card{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 8px 12px 10px;
+    border-radius:10px;
+    margin:2px 0;
+    transition:background 0.15s ease, box-shadow 0.15s ease;
+    position:relative;
+  }
+  .day-card.selected{
+    box-shadow:0 0 0 2px var(--river) inset;
+    background:var(--river-dim);
+  }
+  .day-card.rest-card{opacity:0.72;}
+  .day-card.done-card{opacity:0.68;}
+
+  .day-date{
+    width:50px;
+    flex-shrink:0;
+    text-align:center;
+  }
+  .day-date .dow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+    display:block;
+  }
+  .day-date .dnum{
+    font-family:'JetBrains Mono',monospace;
+    font-size:16px;
+    font-weight:600;
+    color:var(--ink-dim);
+    display:block;
+  }
+
+  .type-icon{
+    width:34px;height:34px;
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .type-icon svg{width:17px;height:17px;}
+  .type-icon.run{background:var(--river-dim);color:var(--river);}
+  .type-icon.gym{background:var(--rust-dim);color:var(--rust);}
+  .type-icon.rest{background:var(--panel-alt);color:var(--grey);}
+  .type-icon.race{background:var(--gold-dim);color:var(--gold);}
+
+  .day-body{flex:1;min-width:0;}
+  .day-title{
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink);
+    margin:0;
+    line-height:1.3;
+  }
+  .day-title .dur{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:600;
+    color:var(--river);
+    margin-left:6px;
+  }
+  .day-detail{
+    font-size:12px;
+    color:var(--ink-dim);
+    margin:2px 0 0;
+    line-height:1.4;
+  }
+  .race-card .day-title .dur{color:var(--gold);}
+  .race-card .type-icon{position:relative;}
+
+  .checkbox-wrap{
+    flex-shrink:0;
+    width:26px;
+    display:flex;
+    justify-content:center;
+  }
+  .cbx{
+    appearance:none;
+    -webkit-appearance:none;
+    width:22px;height:22px;
+    border-radius:7px;
+    border:2px solid var(--panel-border);
+    background:var(--panel-alt);
+    cursor:pointer;
+    position:relative;
+    transition:all 0.15s ease;
+    flex-shrink:0;
+  }
+  .cbx:hover{border-color:var(--river);}
+  .cbx:checked{background:var(--leaf);border-color:var(--leaf);}
+  .cbx:checked::after{
+    content:"";
+    position:absolute;
+    left:6px; top:2px;
+    width:6px; height:11px;
+    border:solid #10161A;
+    border-width:0 2.5px 2.5px 0;
+    transform:rotate(40deg);
+  }
+  .cbx.race-cbx:checked{background:var(--gold);border-color:var(--gold);}
+  .cbx.race-cbx:checked::after{border-color:#10161A;}
+  .cbx:disabled{opacity:0.35;pointer-events:none;}
+
+  .handle-btn{
+    flex-shrink:0;
+    width:32px;height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+    border:none;
+    border-radius:8px;
+    color:var(--ink-faint);
+    cursor:pointer;
+    transition:all 0.15s ease;
+    padding:0;
+  }
+  .handle-btn svg{width:16px;height:16px;}
+  .handle-btn:hover{color:var(--ink);background:var(--panel-alt);}
+  .handle-btn.selected{color:var(--river);background:var(--river-dim);}
+
+  .swap-badge{
+    position:absolute;
+    top:-6px; left:38px;
+    background:var(--river);
+    color:#0C1216;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    font-weight:700;
+    width:16px;height:16px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .footnote{
+    text-align:center;
+    font-size:11px;
+    color:var(--ink-faint);
+    margin-top:22px;
+    line-height:1.6;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+
+  a:focus-visible, button:focus-visible, .cbx:focus-visible, .week-tab:focus-visible{
+    outline:2px solid var(--river);
+    outline-offset:2px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <p class="eyebrow" id="eyebrow">Race Tracker</p>
+    <h1>Rothman Orthopaedics 8K</h1>
+    <p class="race-meta">Saturday, November 21, 2026 · 11:00 AM start · 25th &amp; Kelly Drive, Philadelphia</p>
+    <div class="hero-row">
+      <div>
+        <div class="countdown-num" id="countdownNum">—</div>
+        <div class="countdown-label" id="countdownLabel">days to go</div>
+      </div>
+      <div class="progress-block">
+        <div class="progress-label"><span>OVERALL PROGRESS</span><span id="progressPct">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-tabs" id="weekTabs"></div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div class="panel-head-left">
+        <p class="panel-phase" id="panelPhase">—</p>
+        <h2 id="panelTitle">Week 1</h2>
+        <p class="panel-range" id="panelRange">—</p>
+      </div>
+      <div class="head-actions">
+        <button class="icon-btn" id="resetBtn" title="Reset this week's order">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 4v5h5"/></svg>
+          Reset
+        </button>
+      </div>
+    </div>
+    <p class="week-quote" id="weekQuote"></p>
+    <div class="swap-hint" id="swapHint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+      <span>Tap the handle on two days to swap their workouts.</span>
+    </div>
+    <div class="day-list" id="dayList"></div>
+  </div>
+
+  <p class="footnote" id="loadingNote">Loading your saved progress…</p>
+</div>
+
+<script>
+(function(){
+
+  /* ---------------- Plan data ---------------- */
+  var DAY_LABELS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+  function d(type,title,duration,detail){
+    return {type:type,title:title,duration:duration||'',detail:detail||''};
+  }
+
+  var GYM_DEFAULT = 'Strength / cross-training, your choice';
+  function gym(detail){ return d('gym','Gym','',detail||GYM_DEFAULT); }
+  function rest(title,detail){ return d('rest',title||'Rest','',detail||'Full rest day'); }
+
+  var WEEKS = [
+    { n:1, start:'2026-08-24', phase:'Base Building',
+      quote:'"Nobody\u2019s coming to lace up your shoes for you. Get out the door anyway."',
+      slots:[
+      d('run','Run 1 · Easy','25 min','4 min run / 1 min walk'),
+      gym(), rest(),
+      d('run','Run 2 · Easy','30 min','4 min run / 1 min walk'),
+      gym(),
+      d('run','Run 3 · Long','30 min','4 min run / 1 min walk'),
+      gym()
+    ]},
+    { n:2, start:'2026-08-31', phase:'Base Building',
+      quote:'"Comfortable is where progress goes to die. Get uncomfortable, one minute at a time."',
+      slots:[
+      d('run','Run 1 · Easy','25 min','5 min run / 1 min walk'),
+      gym(), rest(),
+      d('run','Run 2 · Easy','30 min','5 min run / 1 min walk'),
+      gym(),
+      d('run','Run 3 · Long','35 min','5 min run / 1 min walk'),
+      gym()
+    ]},
+    { n:3, start:'2026-09-07', phase:'Base Building',
+      quote:'"That first taste of hard effort? Get used to it. Comfortable never finished anything."',
+      slots:[
+      d('run','Run 1 · Easy','30 min','8 min run / 1 min walk'),
+      gym(), rest(),
+      d('run','Run 2 · Tempo preview','30 min','8 min run / 1 min walk + two 1-min "comfortably hard" pickups within the run segments'),
+      gym(),
+      d('run','Run 3 · Long','40 min','8 min run / 1 min walk'),
+      gym()
+    ]},
+    { n:4, start:'2026-09-14', phase:'Cutback',
+      quote:'"Backing off isn\u2019t weak. It\u2019s the discipline to build instead of break yourself down."',
+      slots:[
+      d('run','Run 1 · Easy','25 min','8 min run / 1 min walk'),
+      gym(), rest(),
+      d('run','Run 2 · Easy','25 min','8 min run / 1 min walk'),
+      gym(),
+      d('run','Run 3 · Long','30 min','Same pattern as Week 3 — lower volume, not lower intensity'),
+      gym()
+    ]},
+    { n:5, start:'2026-09-21', phase:'Build Phase',
+      quote:'"The walk breaks are gone. So is every excuse you were hiding behind them."',
+      slots:[
+      d('run','Run 1 · Easy','25 min','Continuous running begins — no scheduled walk breaks'),
+      gym(), rest(),
+      d('run','Run 2 · Easy','25 min','Still easy pace — tempo effort starts next week'),
+      gym(),
+      d('run','Run 3 · Long','40 min','Continuous'),
+      gym()
+    ]},
+    { n:6, start:'2026-09-28', phase:'Build Phase',
+      quote:'"The burn in your legs during those pickups is the work becoming real. Lean into it."',
+      slots:[
+      d('run','Run 1 · Easy','30 min',''),
+      gym(), rest(),
+      d('run','Run 2 · Tempo','30 min','4×1 min pickup (faster than easy, not sprinting), 2 min easy jog between'),
+      gym(),
+      d('run','Run 3 · Long','45 min',''),
+      gym()
+    ]},
+    { n:7, start:'2026-10-05', phase:'Build Phase',
+      quote:'"You don\u2019t find out what you\u2019re made of on the easy days."',
+      slots:[
+      d('run','Run 1 · Easy','30 min',''),
+      gym(), rest(),
+      d('run','Run 2 · Tempo','30 min','5×1 min pickup, 2 min easy jog between'),
+      gym(),
+      d('run','Run 3 · Long','50 min',''),
+      gym()
+    ]},
+    { n:8, start:'2026-10-12', phase:'Cutback',
+      quote:'"Smart enough to ease up, hungry enough to come back harder next week."',
+      slots:[
+      d('run','Run 1 · Easy','25 min',''),
+      gym(), rest(),
+      d('run','Run 2 · Easy','25 min',''),
+      gym(),
+      d('run','Run 3 · Long','35 min',''),
+      gym()
+    ]},
+    { n:9, start:'2026-10-19', phase:'Peak Phase',
+      quote:'"Ten hard minutes is nothing next to the sixty you\u2019re about to run. Earn it."',
+      slots:[
+      d('run','Run 1 · Easy','30 min',''),
+      gym(), rest(),
+      d('run','Run 2 · Tempo','30 min','10 min at "comfortably hard" in the middle'),
+      gym(),
+      d('run','Run 3 · Long','55 min',''),
+      gym()
+    ]},
+    { n:10, start:'2026-10-26', phase:'Peak Phase',
+      quote:'"Your longest run yet. Nobody\u2019s grading on how easy it feels. Finish it anyway."',
+      slots:[
+      d('run','Run 1 · Easy','30 min',''),
+      gym(), rest(),
+      d('run','Run 2 · Tempo','30 min','12 min at "comfortably hard"'),
+      gym(),
+      d('run','Run 3 · Long','60 min','Peak long run'),
+      gym()
+    ]},
+    { n:11, start:'2026-11-02', phase:'Peak Phase',
+      quote:'"Race pace isn\u2019t a suggestion anymore. It\u2019s a promise you\u2019re making to yourself."',
+      slots:[
+      d('run','Run 1 · Easy','30 min',''),
+      gym(), rest(),
+      d('run','Run 2 · Tempo','30 min','15 min at goal race pace'),
+      gym(),
+      d('run','Run 3 · Long','55 min',''),
+      gym()
+    ]},
+    { n:12, start:'2026-11-09', phase:'Taper',
+      quote:'"The work is already done. Now shut up and trust it."',
+      slots:[
+      d('run','Run 1 · Easy','20 min',''),
+      gym('Go light — ease off leg work'), rest(),
+      d('run','Run 2 · Tempo','25 min','4×1 min at race pace'),
+      gym('Go light — ease off leg work'),
+      d('run','Run 3 · Long','35 min','Easy pace'),
+      gym('Go light — ease off leg work')
+    ]},
+    { n:13, start:'2026-11-16', phase:'Race Week',
+      quote:'"Race week. No more talk. Show up and take what\u2019s yours."',
+      slots:[
+      d('run','Run 1 · Easy','20 min',''),
+      gym('Light session only, if you feel restless'), rest(),
+      d('run','Run 2 · Strides','15 min','A few 30-sec strides'),
+      rest('Rest','Light or fully off — skip the gym'),
+      d('race','Rothman Orthopaedics 8K','4.97 mi','11:00 AM start · 25th & Kelly Dr'),
+      rest('Recovery','Rest, hydrate, and celebrate the finish!')
+    ]}
+  ];
+
+  var RACE_DATE = new Date(2026,10,21); // Nov 21 2026
+  var STORAGE_KEY = 'rothman-8k-plan-v1';
+
+  /* ---------------- State ---------------- */
+  var state = null;              // { "1":[slot,...7], "2":[...], ... }
+  var currentWeek = 1;
+  var selectedIdx = null;
+  var storageOK = true;
+
+  function cloneDefault(weekN){
+    var w = WEEKS[weekN-1];
+    return w.slots.map(function(s){
+      return {type:s.type, title:s.title, duration:s.duration, detail:s.detail, done:false};
+    });
+  }
+
+  function buildDefaultState(){
+    var s = {};
+    WEEKS.forEach(function(w){ s[w.n] = cloneDefault(w.n); });
+    return s;
+  }
+
+  async function loadState(){
+    try{
+      var res = await window.storage.get(STORAGE_KEY, false);
+      if(res && res.value){
+        state = JSON.parse(res.value);
+        // fill in any missing weeks (safety, in case plan changes)
+        WEEKS.forEach(function(w){ if(!state[w.n]) state[w.n] = cloneDefault(w.n); });
+      } else {
+        state = buildDefaultState();
+      }
+    } catch(e){
+      storageOK = (e && e.message === 'not-found') ? true : false;
+      state = buildDefaultState();
+    }
+  }
+
+  async function saveState(){
+    try{
+      await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+    } catch(e){
+      console.error('Could not save progress', e);
+    }
+  }
+
+  /* ---------------- Helpers ---------------- */
+  function startOfDay(dt){ var x = new Date(dt); x.setHours(0,0,0,0); return x; }
+
+  function weekStart(w){ return new Date(w.start + 'T00:00:00'); }
+  function weekEnd(w){ var e = weekStart(w); e.setDate(e.getDate()+6); return e; }
+
+  function formatRange(w){
+    var s = weekStart(w), e = weekEnd(w);
+    var opts = {month:'short', day:'numeric'};
+    var sLabel = s.toLocaleDateString('en-US', opts);
+    var eLabel = (s.getMonth()===e.getMonth()) ? String(e.getDate()) : e.toLocaleDateString('en-US', opts);
+    return sLabel + '–' + eLabel;
+  }
+
+  function dateForSlot(w, idx){
+    var dt = weekStart(w);
+    dt.setDate(dt.getDate()+idx);
+    return dt;
+  }
+
+  function determineInitialWeek(){
+    var today = startOfDay(new Date());
+    for(var i=0;i<WEEKS.length;i++){
+      var w = WEEKS[i];
+      if(today >= weekStart(w) && today <= weekEnd(w)) return w.n;
+    }
+    if(today < weekStart(WEEKS[0])) return 1;
+    return WEEKS[WEEKS.length-1].n;
+  }
+
+  function iconFor(type){
+    if(type==='run') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="17" cy="5" r="2"/><path d="M4 20l4-5 3 2 3-4"/><path d="M9 15l2-6 5 2 3 5"/><path d="M13 9l-3-2-3 2"/></svg>';
+    if(type==='gym') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5l11 11"/><path d="M21 21l-3-3M3 3l3 3"/><path d="M15 3l3 3-9 9-3-3z"/><path d="M4.5 16.5l3 3"/></svg>';
+    if(type==='race') return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4"/><path d="M4 4h11l-2 3.5L15 11H4"/></svg>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+  }
+
+  function isCheckable(type){ return type !== 'rest'; }
+
+  /* ---------------- Render ---------------- */
+  function renderHero(){
+    var today = startOfDay(new Date());
+    var diff = Math.round((startOfDay(RACE_DATE) - today) / 86400000);
+    var numEl = document.getElementById('countdownNum');
+    var labEl = document.getElementById('countdownLabel');
+    if(diff > 0){ numEl.textContent = diff; labEl.textContent = diff===1 ? 'day to go' : 'days to go'; }
+    else if(diff === 0){ numEl.textContent = '🏁'; labEl.textContent = 'race day!'; }
+    else { numEl.textContent = '🎉'; labEl.textContent = 'race complete'; }
+
+    var totalCheckable = 0, totalDone = 0;
+    WEEKS.forEach(function(w){
+      state[w.n].forEach(function(slot){
+        if(isCheckable(slot.type)){ totalCheckable++; if(slot.done) totalDone++; }
+      });
+    });
+    var pct = totalCheckable ? Math.round(totalDone/totalCheckable*100) : 0;
+    document.getElementById('progressPct').textContent = totalDone + ' / ' + totalCheckable + ' · ' + pct + '%';
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function renderTabs(){
+    var todayWeek = determineInitialWeek();
+    var wrap = document.getElementById('weekTabs');
+    wrap.innerHTML = '';
+    WEEKS.forEach(function(w){
+      var slots = state[w.n];
+      var checkable = slots.filter(function(s){return isCheckable(s.type);});
+      var done = checkable.filter(function(s){return s.done;}).length;
+      var pct = checkable.length ? (done/checkable.length*100) : 0;
+
+      var btn = document.createElement('button');
+      btn.className = 'week-tab' + (w.n===currentWeek ? ' active' : '') + (w.n===todayWeek ? ' current-marker' : '');
+      btn.setAttribute('type','button');
+      btn.innerHTML = '<span class="wk-num">W' + w.n + '</span><span class="wk-phase">' + w.phase + '</span><span class="wk-fill" style="width:' + pct + '%"></span>';
+      btn.addEventListener('click', function(){
+        currentWeek = w.n;
+        selectedIdx = null;
+        renderAll();
+      });
+      wrap.appendChild(btn);
+    });
+    var activeTab = wrap.querySelector('.week-tab.active');
+    if(activeTab) activeTab.scrollIntoView({block:'nearest', inline:'center'});
+  }
+
+  function renderPanel(){
+    var w = WEEKS[currentWeek-1];
+    document.getElementById('panelPhase').textContent = w.phase;
+    document.getElementById('panelTitle').textContent = 'Week ' + w.n;
+    document.getElementById('panelRange').textContent = formatRange(w);
+    document.getElementById('weekQuote').textContent = w.quote;
+
+    var list = document.getElementById('dayList');
+    list.className = 'day-list';
+    list.innerHTML = '';
+
+    var slots = state[currentWeek];
+    slots.forEach(function(slot, idx){
+      var card = document.createElement('div');
+      var classes = ['day-card'];
+      if(slot.type==='rest') classes.push('rest-card');
+      if(slot.type==='race') classes.push('race-card');
+      if(slot.done && slot.type!=='rest') classes.push('done-card');
+      if(selectedIdx===idx) classes.push('selected');
+      card.className = classes.join(' ');
+
+      var dt = dateForSlot(w, idx);
+      var checkable = isCheckable(slot.type);
+      var cbxClass = slot.type==='race' ? 'cbx race-cbx' : 'cbx';
+      var handleSelected = selectedIdx===idx;
+
+      card.innerHTML =
+        '<div class="day-date"><span class="dow">' + DAY_LABELS[idx] + '</span><span class="dnum">' + dt.getDate() + '</span></div>' +
+        '<div class="type-icon ' + slot.type + '">' + iconFor(slot.type) + (handleSelected ? '<span class="swap-badge">1</span>' : '') + '</div>' +
+        '<div class="day-body">' +
+          '<p class="day-title">' + slot.title + (slot.duration ? '<span class="dur">' + slot.duration + '</span>' : '') + '</p>' +
+          (slot.detail ? '<p class="day-detail">' + slot.detail + '</p>' : '') +
+        '</div>' +
+        '<div class="checkbox-wrap">' +
+          (checkable ? '<input type="checkbox" class="' + cbxClass + '" ' + (slot.done?'checked':'') + ' aria-label="Mark ' + slot.title + ' complete">' : '') +
+        '</div>' +
+        '<button type="button" class="handle-btn' + (handleSelected ? ' selected' : '') + '" title="Tap to select for swapping" aria-label="Select ' + DAY_LABELS[idx] + ' to swap with another day">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>' +
+        '</button>';
+
+      if(checkable){
+        var cbx = card.querySelector('.cbx');
+        cbx.addEventListener('click', function(e){
+          e.stopPropagation();
+          slot.done = !slot.done;
+          saveState();
+          renderAll();
+        });
+      }
+
+      var handle = card.querySelector('.handle-btn');
+      handle.addEventListener('click', function(e){
+        e.stopPropagation();
+        if(selectedIdx===null){ selectedIdx = idx; renderPanel(); return; }
+        if(selectedIdx===idx){ selectedIdx = null; renderPanel(); return; }
+        var arr = state[currentWeek];
+        var tmp = arr[selectedIdx];
+        arr[selectedIdx] = arr[idx];
+        arr[idx] = tmp;
+        selectedIdx = null;
+        saveState();
+        renderAll();
+      });
+
+      list.appendChild(card);
+    });
+  }
+
+  function renderAll(){
+    renderHero();
+    renderTabs();
+    renderPanel();
+  }
+
+  /* ---------------- Controls ---------------- */
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    var ok = window.confirm('Reset Week ' + currentWeek + ' to its default order? This will also clear checkmarks for this week.');
+    if(!ok) return;
+    state[currentWeek] = cloneDefault(currentWeek);
+    selectedIdx = null;
+    saveState();
+    renderAll();
+  });
+
+  /* ---------------- Init ---------------- */
+  (async function init(){
+    await loadState();
+    currentWeek = determineInitialWeek();
+    document.getElementById('loadingNote').style.display = 'none';
+    renderAll();
+    if(!storageOK){
+      var note = document.getElementById('loadingNote');
+      note.textContent = 'Note: progress couldn\'t be saved in this view — it will reset next time you open the tracker.';
+      note.style.display = 'block';
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
