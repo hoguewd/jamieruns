@@ -477,6 +477,9 @@
     *{transition:none !important;}
     .side-buddy svg{animation:none !important;}
     .celebrate-overlay.show .celebrate-content{animation:celebrate-fade 1.2s ease-out forwards !important;}
+    .thought-input-wrap.eaten{animation:celebrate-fade 0.4s ease-out forwards !important;}
+    .eater-bear.chomping{animation:none !important;}
+    .munch-text.show{animation:none !important;opacity:1 !important;}
   }
 
   /* ---------- Celebrate Pop-up ---------- */
@@ -528,6 +531,77 @@
     15%{ opacity:1; }
     80%{ opacity:1; }
     100%{ opacity:0; }
+  }
+
+  /* ---------- Thought Dump ---------- */
+  .thought-body{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:16px 18px 20px;
+  }
+  .thought-input-wrap{
+    flex:1;
+    min-width:0;
+  }
+  .thought-input-wrap.eaten{
+    animation:get-eaten 0.55s cubic-bezier(.5,-0.2,.7,.4) forwards;
+  }
+  @keyframes get-eaten{
+    0%{ transform:translateX(0) scale(1); opacity:1; }
+    100%{ transform:translateX(46px) scale(0.1) rotate(8deg); opacity:0; }
+  }
+  .thought-input{
+    width:100%;
+    padding:11px 14px;
+    border-radius:10px;
+    border:1.5px solid var(--panel-border);
+    background:var(--panel-alt);
+    color:var(--ink);
+    font-family:'Manrope',sans-serif;
+    font-size:14px;
+  }
+  .thought-input::placeholder{color:var(--ink-faint);}
+  .thought-input:focus{outline:none;border-color:var(--river);}
+
+  .eater-bear-wrap{
+    position:relative;
+    flex-shrink:0;
+    width:60px;height:60px;
+  }
+  .eater-bear{
+    width:60px;height:60px;
+    transform-origin:50% 60%;
+  }
+  .eater-bear .mouth-open{opacity:0;transition:opacity .12s ease;}
+  .eater-bear.chomping .mouth-closed{opacity:0;}
+  .eater-bear.chomping .mouth-open{opacity:1;}
+  .eater-bear.chomping{animation:chomp-wiggle 0.6s ease-in-out;}
+  @keyframes chomp-wiggle{
+    0%{ transform:scale(1) rotate(0deg); }
+    20%{ transform:scale(1.15) rotate(-5deg); }
+    40%{ transform:scale(0.92) rotate(4deg); }
+    60%{ transform:scale(1.12) rotate(-3deg); }
+    100%{ transform:scale(1) rotate(0deg); }
+  }
+  .munch-text{
+    position:absolute;
+    top:-16px; left:50%;
+    transform:translateX(-50%);
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:12px;
+    color:var(--rust);
+    opacity:0;
+    white-space:nowrap;
+    pointer-events:none;
+  }
+  .munch-text.show{animation:munch-pop 0.6s ease-out;}
+  @keyframes munch-pop{
+    0%{ opacity:0; transform:translate(-50%,4px) scale(0.7); }
+    30%{ opacity:1; transform:translate(-50%,-3px) scale(1.15); }
+    60%{ opacity:1; transform:translate(-50%,-6px) scale(1); }
+    100%{ opacity:0; transform:translate(-50%,-10px) scale(1); }
   }
 
   /* ---------- Side Buddies ---------- */
@@ -731,6 +805,40 @@
       <span>Tap the handle on two days to swap their workouts.</span>
     </div>
     <div class="day-list" id="dayList"></div>
+  </div>
+
+  <div class="panel thought-panel">
+    <div class="panel-head">
+      <div class="panel-head-left">
+        <p class="panel-phase">Mental Reset</p>
+        <h2>Thought Dump</h2>
+        <p class="panel-range">Write down a negative thought, hit Enter, and let the bear eat it.</p>
+      </div>
+    </div>
+    <div class="thought-body">
+      <div class="thought-input-wrap" id="thoughtInputWrap">
+        <input type="text" id="thoughtInput" class="thought-input" placeholder="Type it out…" maxlength="140" autocomplete="off">
+      </div>
+      <div class="eater-bear-wrap">
+        <span class="munch-text" id="munchText">MUNCH!</span>
+        <svg id="eaterBear" class="eater-bear" viewBox="0 0 100 100">
+          <ellipse cx="50" cy="70" rx="26" ry="24" fill="var(--gold)"/>
+          <circle cx="50" cy="36" r="20" fill="var(--gold)"/>
+          <circle cx="32" cy="19" r="8" fill="var(--gold)"/>
+          <circle cx="68" cy="19" r="8" fill="var(--gold)"/>
+          <circle cx="32" cy="19" r="4" fill="var(--gold-dim)"/>
+          <circle cx="68" cy="19" r="4" fill="var(--gold-dim)"/>
+          <ellipse cx="50" cy="42" rx="10" ry="7" fill="#FFFFFF" opacity="0.85"/>
+          <circle cx="44" cy="34" r="2" fill="#241C10"/>
+          <circle cx="56" cy="34" r="2" fill="#241C10"/>
+          <circle cx="50" cy="41" r="1.8" fill="#241C10"/>
+          <path class="mouth-closed" d="M45 45q5 3 10 0" stroke="#241C10" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          <ellipse class="mouth-open" cx="50" cy="47" rx="7" ry="6" fill="#241C10"/>
+          <ellipse cx="22" cy="64" rx="6" ry="8" fill="var(--gold)"/>
+          <ellipse cx="78" cy="64" rx="6" ry="8" fill="var(--gold)"/>
+        </svg>
+      </div>
+    </div>
   </div>
 
   <p class="footnote" id="loadingNote">Loading your saved progress…</p>
@@ -1130,6 +1238,46 @@
     saveState();
     renderAll();
   });
+
+  /* ---------------- Thought Dump ---------------- */
+  // Nothing typed here is ever saved to storage or sent anywhere — it just gets "eaten" and discarded.
+  var thoughtInput = document.getElementById('thoughtInput');
+  var thoughtWrap = document.getElementById('thoughtInputWrap');
+  var eaterBear = document.getElementById('eaterBear');
+  var munchText = document.getElementById('munchText');
+  var feedBearTimeout = null;
+
+  function feedBear(){
+    thoughtWrap.classList.remove('eaten');
+    void thoughtWrap.offsetWidth;
+    thoughtWrap.classList.add('eaten');
+
+    eaterBear.classList.remove('chomping');
+    void eaterBear.offsetWidth;
+    eaterBear.classList.add('chomping');
+
+    munchText.classList.remove('show');
+    void munchText.offsetWidth;
+    munchText.classList.add('show');
+
+    clearTimeout(feedBearTimeout);
+    feedBearTimeout = setTimeout(function(){
+      thoughtInput.value = '';
+      thoughtWrap.classList.remove('eaten');
+      eaterBear.classList.remove('chomping');
+      munchText.classList.remove('show');
+    }, 620);
+  }
+
+  if(thoughtInput){
+    thoughtInput.addEventListener('keydown', function(e){
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        if(thoughtInput.value.trim().length === 0) return;
+        feedBear();
+      }
+    });
+  }
 
   /* ---------------- Init ---------------- */
   (function init(){
