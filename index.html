@@ -653,26 +653,27 @@
     return s;
   }
 
-  async function loadState(){
+  function loadState(){
     try{
-      var res = await window.storage.get(STORAGE_KEY, false);
-      if(res && res.value){
-        state = JSON.parse(res.value);
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        state = JSON.parse(raw);
         // fill in any missing weeks (safety, in case plan changes)
         WEEKS.forEach(function(w){ if(!state[w.n]) state[w.n] = cloneDefault(w.n); });
       } else {
         state = buildDefaultState();
       }
     } catch(e){
-      storageOK = (e && e.message === 'not-found') ? true : false;
+      storageOK = false;
       state = buildDefaultState();
     }
   }
 
-  async function saveState(){
+  function saveState(){
     try{
-      await window.storage.set(STORAGE_KEY, JSON.stringify(state), false);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch(e){
+      storageOK = false;
       console.error('Could not save progress', e);
     }
   }
@@ -847,14 +848,14 @@
   });
 
   /* ---------------- Init ---------------- */
-  (async function init(){
-    await loadState();
+  (function init(){
+    loadState();
     currentWeek = determineInitialWeek();
     document.getElementById('loadingNote').style.display = 'none';
     renderAll();
     if(!storageOK){
       var note = document.getElementById('loadingNote');
-      note.textContent = 'Note: progress couldn\'t be saved in this view — it will reset next time you open the tracker.';
+      note.textContent = 'Note: your browser is blocking saved progress (e.g. private/incognito mode) — checkmarks won\'t persist here.';
       note.style.display = 'block';
     }
   })();
