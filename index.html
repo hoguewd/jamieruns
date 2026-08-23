@@ -8,22 +8,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#10161A;
-    --panel:#1B252B;
-    --panel-alt:#212D34;
-    --panel-border:#2B3840;
-    --ink:#EDEFE9;
-    --ink-dim:#93A6A1;
-    --ink-faint:#5E6E6A;
-    --river:#4FA8C9;
-    --river-dim:#2A4C58;
-    --rust:#E08A3E;
-    --rust-dim:#4A3623;
-    --leaf:#7EBF6A;
-    --leaf-dim:#2C3D28;
-    --gold:#E8B84B;
-    --gold-dim:#4A3B1D;
-    --grey:#8A9490;
+    --bg:#F1F5F3;
+    --panel:#FFFFFF;
+    --panel-alt:#E9EFEC;
+    --panel-border:#D6E0DB;
+    --ink:#172420;
+    --ink-dim:#57685F;
+    --ink-faint:#8A9A92;
+    --river:#1D7A9C;
+    --river-dim:#DCEEF4;
+    --rust:#B85E1E;
+    --rust-dim:#F7E6D4;
+    --leaf:#3F8C3F;
+    --leaf-dim:#E1EFDB;
+    --gold:#A67509;
+    --gold-dim:#F6EAD0;
+    --grey:#6B7A73;
     --radius:14px;
   }
   *{box-sizing:border-box;}
@@ -43,7 +43,7 @@
 
   /* ---------- Hero ---------- */
   .hero{
-    background:linear-gradient(160deg,var(--panel) 0%, #161F24 100%);
+    background:linear-gradient(160deg,var(--panel) 0%, #E7EFEC 100%);
     border:1px solid var(--panel-border);
     border-radius:var(--radius);
     padding:22px 22px 20px;
@@ -55,7 +55,7 @@
     position:absolute;
     top:-40%; right:-15%;
     width:260px; height:260px;
-    background:radial-gradient(circle, rgba(79,168,201,0.16) 0%, rgba(79,168,201,0) 70%);
+    background:radial-gradient(circle, rgba(29,122,156,0.12) 0%, rgba(29,122,156,0) 70%);
     pointer-events:none;
   }
   .eyebrow{
@@ -379,12 +379,12 @@
     position:absolute;
     left:6px; top:2px;
     width:6px; height:11px;
-    border:solid #10161A;
+    border:solid #FFFFFF;
     border-width:0 2.5px 2.5px 0;
     transform:rotate(40deg);
   }
   .cbx.race-cbx:checked{background:var(--gold);border-color:var(--gold);}
-  .cbx.race-cbx:checked::after{border-color:#10161A;}
+  .cbx.race-cbx:checked::after{border-color:#FFFFFF;}
   .cbx:disabled{opacity:0.35;pointer-events:none;}
 
   .handle-btn{
@@ -409,7 +409,7 @@
     position:absolute;
     top:-6px; left:38px;
     background:var(--river);
-    color:#0C1216;
+    color:#FFFFFF;
     font-family:'JetBrains Mono',monospace;
     font-size:10px;
     font-weight:700;
