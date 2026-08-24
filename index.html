@@ -555,33 +555,63 @@
   }
 
   /* ---------- Side Buddies ---------- */
+  /* Mobile default: horizontal scrollable rows, in normal document flow */
   .side-buddy{
-    display:none;
-    position:fixed;
-    top:50%;
-    transform:translateY(-50%);
-    flex-direction:column;
-    align-items:center;
-    gap:24px;
+    display:flex;
+    position:static;
+    flex-direction:row;
+    flex-wrap:nowrap;
+    justify-content:center;
+    align-items:flex-start;
+    gap:14px;
+    padding:6px 4px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
     z-index:5;
   }
-  @media (min-width:980px){
-    .side-buddy{display:flex;}
-  }
-  .side-buddy-left{left:20px;}
-  .side-buddy-right{right:20px;}
+  .side-buddy-right{margin-top:2px;}
   .buddy-item{
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:9px;
+    gap:6px;
     cursor:pointer;
+    flex:0 0 auto;
   }
   .buddy-item:hover .buddy-svg{filter:brightness(1.08);}
   .buddy-svg{
-    width:80px;height:80px;
+    width:44px;height:44px;
     transform-origin:50% 100%;
     animation:buddy-dance 2.3s ease-in-out infinite;
+  }
+  .buddy-caption{
+    max-width:66px;
+    text-align:center;
+    font-family:var(--font-heading);
+    font-weight:600;
+    font-size:10.5px;
+    font-style:italic;
+    line-height:1.3;
+    color:var(--ink-dim);
+    border-top:1px solid var(--divider);
+    padding-top:4px;
+  }
+  /* Wide screens: fixed vertical columns hugging the page edges */
+  @media (min-width:980px){
+    .side-buddy{
+      position:fixed;
+      top:50%;
+      transform:translateY(-50%);
+      flex-direction:column;
+      gap:24px;
+      padding:0;
+      overflow:visible;
+    }
+    .side-buddy-left{left:20px;}
+    .side-buddy-right{right:20px;margin-top:0;}
+    .buddy-item{gap:9px;}
+    .buddy-svg{width:80px;height:80px;}
+    .buddy-caption{max-width:124px;font-size:14px;padding-top:6px;}
   }
   .side-buddy .buddy-item:nth-child(1) .buddy-svg{ animation-duration:2.1s; animation-delay:0s; }
   .side-buddy .buddy-item:nth-child(2) .buddy-svg{ animation-duration:2.5s; animation-delay:0.28s; }
@@ -610,18 +640,6 @@
   @media (prefers-reduced-motion: reduce){
     .buddy-svg{animation:none !important;}
     .buddy-item.flying{animation:none !important;}
-  }
-  .buddy-caption{
-    max-width:124px;
-    text-align:center;
-    font-family:var(--font-heading);
-    font-weight:600;
-    font-size:14px;
-    font-style:italic;
-    line-height:1.35;
-    color:var(--ink-dim);
-    border-top:1px solid var(--divider);
-    padding-top:6px;
   }
 
   a:focus-visible, button:focus-visible, .check-btn:focus-visible, .swap-btn:focus-visible, .tick-btn:focus-visible{
@@ -655,7 +673,103 @@
   </div>
 </div>
 
-<div class="side-buddy side-buddy-left" aria-hidden="true">
+<div class="wrap">
+
+  <header>
+    <p class="kicker">Training Log · Thirteen Weeks</p>
+    <h1>Rothman Orthopaedics 8K</h1>
+    <p class="subtitle">Saturday, November 21, 2026 · 11:00 AM start<br>25th &amp; Kelly Drive, Philadelphia</p>
+  </header>
+
+  <div class="stat-strip">
+    <div class="stat-count">
+      <div class="countdown-num" id="countdownNum">—</div>
+      <div class="countdown-label" id="countdownLabel">days to go</div>
+    </div>
+    <div class="stat-progress">
+      <div class="progress-label">Sessions done</div>
+      <div class="progress-count" id="progressCount">0 / 0<span id="progressPct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <nav class="week-nav">
+    <button type="button" class="week-nav-btn" id="prevWeekBtn" aria-label="Previous week">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="week-center">
+      <div class="week-title" id="weekTitle">Week 1 <span>/ 13</span></div>
+      <div class="week-phase" id="weekPhase">—</div>
+      <div class="week-range" id="weekRange">—</div>
+    </div>
+    <button type="button" class="week-nav-btn" id="nextWeekBtn" aria-label="Next week">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </nav>
+
+  <div class="week-ticks" id="weekTicks"></div>
+
+  <figure class="quote-figure">
+    <span class="quote-icon">
+      <svg viewBox="0 0 100 100">
+        <ellipse cx="42" cy="55" rx="40" ry="30" fill="#C9A272"/>
+        <circle cx="15" cy="24" r="12" fill="#C9A272"/>
+        <ellipse cx="68" cy="62" rx="18" ry="16" fill="#A67C52"/>
+        <circle cx="32" cy="44" r="4.5" fill="#3A2A1A"/>
+        <circle cx="80" cy="58" r="2.2" fill="#3A2A1A"/>
+        <path d="M62 74q6 5 12 0" stroke="#3A2A1A" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <blockquote class="quote-text" id="weekQuoteText"></blockquote>
+  </figure>
+
+  <div class="section-head">
+    <h2>This week</h2>
+    <button type="button" class="btn-outline" id="resetBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 4v5h5"/></svg>
+      Reset week
+    </button>
+  </div>
+  <p class="swap-hint" id="swapHint">Tap the arrows on two days to swap their workouts.</p>
+
+  <div class="day-list" id="dayList"></div>
+
+  <section class="thought-section">
+    <p class="kicker" style="margin-bottom:6px;">Mental Reset</p>
+    <h3 style="margin:0 0 4px;font-family:var(--font-heading);font-weight:600;font-size:29.5px;">Thought Dump</h3>
+    <p class="subtitle" style="margin:0 0 14px;">Write down a negative thought and hit Enter. Nothing here is saved.</p>
+    <div class="thought-body">
+      <div class="thought-input-wrap" id="thoughtInputWrap">
+        <input type="text" id="thoughtInput" class="thought-input" placeholder="Type it out…" maxlength="140" autocomplete="off">
+      </div>
+      <div class="eater-bear-wrap">
+        <span class="munch-text" id="munchText">MUNCH</span>
+        <svg id="eaterBear" class="eater-bear" viewBox="0 0 100 100">
+          <ellipse cx="50" cy="73" rx="27" ry="23" fill="#A67509"/>
+          <ellipse cx="50" cy="76" rx="15" ry="13" fill="#F6EAD0"/>
+          <circle cx="50" cy="38" r="21" fill="#A67509"/>
+          <circle cx="31" cy="20" r="9" fill="#A67509"/>
+          <circle cx="69" cy="20" r="9" fill="#A67509"/>
+          <circle cx="31" cy="20" r="4.5" fill="#F6EAD0"/>
+          <circle cx="69" cy="20" r="4.5" fill="#F6EAD0"/>
+          <ellipse cx="50" cy="44" rx="12" ry="9" fill="#FFFFFF" opacity="0.9"/>
+          <ellipse cx="32" cy="43" rx="4.5" ry="3" fill="#EDA9A0" opacity="0.55"/>
+          <ellipse cx="68" cy="43" rx="4.5" ry="3" fill="#EDA9A0" opacity="0.55"/>
+          <circle cx="43" cy="35" r="2.4" fill="#241C10"/>
+          <circle cx="57" cy="35" r="2.4" fill="#241C10"/>
+          <circle cx="43.8" cy="34.1" r="0.6" fill="#FFFFFF"/>
+          <circle cx="57.8" cy="34.1" r="0.6" fill="#FFFFFF"/>
+          <circle cx="50" cy="43" r="2.1" fill="#241C10"/>
+          <path class="mouth-closed" d="M44 47q6 3.5 12 0" stroke="#241C10" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          <ellipse class="mouth-open" cx="50" cy="48" rx="7.5" ry="6.5" fill="#241C10"/>
+          <ellipse cx="22" cy="66" rx="6.5" ry="8.5" fill="#A67509"/>
+          <ellipse cx="78" cy="66" rx="6.5" ry="8.5" fill="#A67509"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="side-buddy side-buddy-left" aria-hidden="true">
   <div class="buddy-item">
     <svg class="buddy-svg" viewBox="0 0 100 100">
       <ellipse cx="36" cy="14" rx="6.5" ry="14" fill="#D6D0C4" transform="rotate(-14 36 14)"/>
@@ -771,102 +885,6 @@
     <div class="buddy-caption" id="penguinBubbleText">Keep going, friend!</div>
   </div>
 </div>
-
-<div class="wrap">
-
-  <header>
-    <p class="kicker">Training Log · Thirteen Weeks</p>
-    <h1>Rothman Orthopaedics 8K</h1>
-    <p class="subtitle">Saturday, November 21, 2026 · 11:00 AM start<br>25th &amp; Kelly Drive, Philadelphia</p>
-  </header>
-
-  <div class="stat-strip">
-    <div class="stat-count">
-      <div class="countdown-num" id="countdownNum">—</div>
-      <div class="countdown-label" id="countdownLabel">days to go</div>
-    </div>
-    <div class="stat-progress">
-      <div class="progress-label">Sessions done</div>
-      <div class="progress-count" id="progressCount">0 / 0<span id="progressPct">0%</span></div>
-      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    </div>
-  </div>
-
-  <nav class="week-nav">
-    <button type="button" class="week-nav-btn" id="prevWeekBtn" aria-label="Previous week">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
-    <div class="week-center">
-      <div class="week-title" id="weekTitle">Week 1 <span>/ 13</span></div>
-      <div class="week-phase" id="weekPhase">—</div>
-      <div class="week-range" id="weekRange">—</div>
-    </div>
-    <button type="button" class="week-nav-btn" id="nextWeekBtn" aria-label="Next week">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-    </button>
-  </nav>
-
-  <div class="week-ticks" id="weekTicks"></div>
-
-  <figure class="quote-figure">
-    <span class="quote-icon">
-      <svg viewBox="0 0 100 100">
-        <ellipse cx="42" cy="55" rx="40" ry="30" fill="#C9A272"/>
-        <circle cx="15" cy="24" r="12" fill="#C9A272"/>
-        <ellipse cx="68" cy="62" rx="18" ry="16" fill="#A67C52"/>
-        <circle cx="32" cy="44" r="4.5" fill="#3A2A1A"/>
-        <circle cx="80" cy="58" r="2.2" fill="#3A2A1A"/>
-        <path d="M62 74q6 5 12 0" stroke="#3A2A1A" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-      </svg>
-    </span>
-    <blockquote class="quote-text" id="weekQuoteText"></blockquote>
-  </figure>
-
-  <div class="section-head">
-    <h2>This week</h2>
-    <button type="button" class="btn-outline" id="resetBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 4v5h5"/></svg>
-      Reset week
-    </button>
-  </div>
-  <p class="swap-hint" id="swapHint">Tap the arrows on two days to swap their workouts.</p>
-
-  <div class="day-list" id="dayList"></div>
-
-  <section class="thought-section">
-    <p class="kicker" style="margin-bottom:6px;">Mental Reset</p>
-    <h3 style="margin:0 0 4px;font-family:var(--font-heading);font-weight:600;font-size:29.5px;">Thought Dump</h3>
-    <p class="subtitle" style="margin:0 0 14px;">Write down a negative thought and hit Enter. Nothing here is saved.</p>
-    <div class="thought-body">
-      <div class="thought-input-wrap" id="thoughtInputWrap">
-        <input type="text" id="thoughtInput" class="thought-input" placeholder="Type it out…" maxlength="140" autocomplete="off">
-      </div>
-      <div class="eater-bear-wrap">
-        <span class="munch-text" id="munchText">MUNCH</span>
-        <svg id="eaterBear" class="eater-bear" viewBox="0 0 100 100">
-          <ellipse cx="50" cy="73" rx="27" ry="23" fill="#A67509"/>
-          <ellipse cx="50" cy="76" rx="15" ry="13" fill="#F6EAD0"/>
-          <circle cx="50" cy="38" r="21" fill="#A67509"/>
-          <circle cx="31" cy="20" r="9" fill="#A67509"/>
-          <circle cx="69" cy="20" r="9" fill="#A67509"/>
-          <circle cx="31" cy="20" r="4.5" fill="#F6EAD0"/>
-          <circle cx="69" cy="20" r="4.5" fill="#F6EAD0"/>
-          <ellipse cx="50" cy="44" rx="12" ry="9" fill="#FFFFFF" opacity="0.9"/>
-          <ellipse cx="32" cy="43" rx="4.5" ry="3" fill="#EDA9A0" opacity="0.55"/>
-          <ellipse cx="68" cy="43" rx="4.5" ry="3" fill="#EDA9A0" opacity="0.55"/>
-          <circle cx="43" cy="35" r="2.4" fill="#241C10"/>
-          <circle cx="57" cy="35" r="2.4" fill="#241C10"/>
-          <circle cx="43.8" cy="34.1" r="0.6" fill="#FFFFFF"/>
-          <circle cx="57.8" cy="34.1" r="0.6" fill="#FFFFFF"/>
-          <circle cx="50" cy="43" r="2.1" fill="#241C10"/>
-          <path class="mouth-closed" d="M44 47q6 3.5 12 0" stroke="#241C10" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-          <ellipse class="mouth-open" cx="50" cy="48" rx="7.5" ry="6.5" fill="#241C10"/>
-          <ellipse cx="22" cy="66" rx="6.5" ry="8.5" fill="#A67509"/>
-          <ellipse cx="78" cy="66" rx="6.5" ry="8.5" fill="#A67509"/>
-        </svg>
-      </div>
-    </div>
-  </section>
 
   <p class="footnote" id="footnote">Loading your saved progress…</p>
 </div>
@@ -1021,14 +1039,14 @@
   var RACE_DATE = new Date(2026,10,21); // Nov 21 2026
   var STORAGE_KEY = 'rothman-8k-plan-v1';
   var ENCOURAGEMENT = [
-    "You've got this!",
+    "You've got this, Jamie!",
     "One step at a time.",
-    "Proud of you already.",
+    "Proud of you already, Jamie.",
     "Small steps, big wins.",
     "Stronger than yesterday.",
-    "Keep going, friend!",
+    "Keep going, Jamie!",
     "Every run counts.",
-    "Showing up is huge."
+    "Showing up is huge, Jamie."
   ];
 
   var CELEBRATE_MESSAGES = [
