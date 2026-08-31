@@ -1,7 +1,15 @@
 {
   "name": "jamieruns",
   "compatibility_date": "2026-08-23",
+  "main": "src/worker.js",
   "assets": {
-    "directory": "./"
-  }
+    "directory": "./",
+    "binding": "ASSETS"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "e4e8eb19ccff41b5b76dcb23b7e91df1"
+    }
+  ]
 }
