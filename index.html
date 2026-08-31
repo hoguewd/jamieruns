@@ -327,7 +327,15 @@
     font-variant-numeric:tabular-nums;
     color:var(--neutral-800);
   }
-  .day-body{flex:1;min-width:0;}
+  .day-main{flex:1;min-width:0;}
+  .day-item-row{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    padding:9px 0;
+  }
+  .day-item-row + .day-item-row{border-top:1px dashed var(--divider);}
+  .day-item-body{flex:1;min-width:0;}
   .day-kicker{
     font-family:var(--font-heading);
     font-weight:700;
@@ -369,10 +377,9 @@
     border-radius:var(--radius-md);
     color:var(--ink);
   }
-  .day-actions{
+  .day-item-actions{
     flex:0 0 auto;
     display:flex;
-    flex-direction:column;
     align-items:center;
     gap:2px;
   }
@@ -401,8 +408,66 @@
     background:var(--accent-100);
   }
   .check-box svg{width:15px;height:15px;}
-  .swap-btn{
-    width:44px;height:30px;
+  .remove-item-btn{
+    width:28px;height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+    border:0;
+    padding:0;
+    cursor:pointer;
+    color:var(--ink-faint2);
+    font-size:18px;
+    line-height:1;
+  }
+  .remove-item-btn:hover{color:var(--accent-700);}
+
+  .day-add-bar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:8px;
+  }
+  .add-item-btn, .note-toggle-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    font-family:var(--font-heading);
+    font-weight:600;
+    font-size:11.5px;
+    letter-spacing:0.03em;
+    color:var(--ink-faint);
+    background:transparent;
+    border:1px dashed var(--divider);
+    border-radius:999px;
+    padding:4px 10px;
+    cursor:pointer;
+  }
+  .add-item-btn:hover, .note-toggle-btn:hover{color:var(--accent-700);border-color:var(--accent-300);}
+  .note-toggle-btn.has-note{color:var(--accent-700);border-style:solid;border-color:var(--accent-300);}
+
+  .day-note-wrap{margin-top:8px;}
+  .day-note-input{
+    width:100%;
+    min-height:52px;
+    padding:8px 10px;
+    font:inherit;
+    font-family:var(--font-body);
+    font-size:14px;
+    font-style:italic;
+    color:var(--ink);
+    background:var(--surface);
+    border:1px solid var(--divider);
+    border-radius:var(--radius-md);
+    resize:vertical;
+  }
+  .day-note-input::placeholder{color:var(--ink-faint2);font-style:italic;}
+  .day-note-input:focus{outline:none;border-color:var(--accent);}
+
+  .day-swap-btn{
+    flex:0 0 auto;
+    width:36px;height:44px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -412,13 +477,13 @@
     cursor:pointer;
     color:var(--ink-faint2);
   }
-  .swap-btn.active{color:var(--accent-700);}
-  .swap-btn svg{width:15px;height:15px;}
-  .swap-btn .swap-label{
+  .day-swap-btn.active{color:var(--accent-700);}
+  .day-swap-btn svg{width:15px;height:15px;}
+  .day-swap-btn .swap-label{
     font-family:var(--font-heading);
     font-weight:700;
-    font-size:13px;
-    letter-spacing:0.08em;
+    font-size:11px;
+    letter-spacing:0.06em;
   }
 
   /* ---------- Thought Dump ---------- */
@@ -891,7 +956,7 @@
     </div>
   </section>
 
-  <div class="side-buddy side-buddy-left" aria-hidden="true">
+  <div class="side-buddy side-buddy-left" id="sideBuddyLeft" aria-hidden="true">
   <div class="buddy-item">
     <svg class="buddy-svg" viewBox="0 0 100 100">
       <ellipse cx="36" cy="14" rx="6.5" ry="14" fill="#D6D0C4" transform="rotate(-14 36 14)"/>
@@ -954,7 +1019,7 @@
   </div>
 </div>
 
-<div class="side-buddy side-buddy-right" aria-hidden="true">
+<div class="side-buddy side-buddy-right" id="sideBuddyRight" aria-hidden="true">
   <div class="buddy-item">
     <svg class="buddy-svg" viewBox="0 0 100 100">
       <ellipse cx="50" cy="68" rx="26" ry="25" fill="#F0DCC0"/>
@@ -1201,42 +1266,87 @@
   var state = null;
   var currentWeek = 1;
   var selectedIdx = null;
+  var openNotes = {};
+  var noteSaveTimers = {};
   var storageOK = true;
 
   function cloneDefault(weekN){
     var w = WEEKS[weekN-1];
     return w.slots.map(function(s){
-      return {type:s.type, title:s.title, duration:s.duration, detail:s.detail, pattern:!!s.pattern, done:false};
+      return { items:[{type:s.type, title:s.title, duration:s.duration, detail:s.detail, pattern:!!s.pattern, done:false}], note:'' };
     });
   }
 
+  function makeExtraItem(type){
+    if(type === 'gym') return {type:'gym', title:'Gym', duration:'', detail:GYM_DEFAULT, pattern:false, done:false};
+    return {type:'run', title:'Run · Extra', duration:'', detail:'', pattern:false, done:false};
+  }
+
   function buildDefaultState(){
-    var s = {};
+    var s = { unlockedBonusCount: 0 };
     WEEKS.forEach(function(w){ s[w.n] = cloneDefault(w.n); });
     return s;
   }
 
-  function loadState(){
+  // Migrates a single day-slot from either the current {items:[...], note:''} shape
+  // or the older flat {type,title,duration,detail,pattern,done} shape used before stacking/notes existed.
+  function migrateDaySlot(raw){
+    if(raw && Array.isArray(raw.items)){
+      return { items: raw.items, note: (typeof raw.note === 'string' ? raw.note : '') };
+    }
+    if(raw && raw.type){
+      return { items:[{type:raw.type, title:raw.title, duration:raw.duration, detail:raw.detail, pattern:!!raw.pattern, done:!!raw.done}], note:'' };
+    }
+    return null;
+  }
+
+  function normalizeState(raw){
+    var out = { unlockedBonusCount: (raw && typeof raw.unlockedBonusCount === 'number') ? raw.unlockedBonusCount : 0 };
+    WEEKS.forEach(function(w){
+      var def = cloneDefault(w.n);
+      var rawWeek = raw ? raw[w.n] : null;
+      if(!Array.isArray(rawWeek)){ out[w.n] = def; return; }
+      out[w.n] = def.map(function(defDay, idx){
+        var migrated = migrateDaySlot(rawWeek[idx]);
+        return migrated || defDay;
+      });
+    });
+    return out;
+  }
+
+  async function loadState(){
     try{
-      var raw = localStorage.getItem(STORAGE_KEY);
-      if(raw){
-        state = JSON.parse(raw);
-        WEEKS.forEach(function(w){ if(!state[w.n]) state[w.n] = cloneDefault(w.n); });
-      } else {
+      var res = await fetch('/api/state', { method: 'GET' });
+      if(!res.ok) throw new Error('Bad response: ' + res.status);
+      var raw = await res.json();
+      state = raw ? normalizeState(raw) : buildDefaultState();
+      storageOK = true;
+    } catch(e){
+      console.error('Could not load shared progress, falling back to this browser only', e);
+      storageOK = false;
+      try{
+        var localRaw = localStorage.getItem(STORAGE_KEY);
+        state = localRaw ? normalizeState(JSON.parse(localRaw)) : buildDefaultState();
+      } catch(e2){
         state = buildDefaultState();
       }
-    } catch(e){
-      storageOK = false;
-      state = buildDefaultState();
     }
   }
 
-  function saveState(){
+  async function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e){ /* ignore */ }
+
     try{
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      var res = await fetch('/api/state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state)
+      });
+      if(!res.ok) throw new Error('Bad response: ' + res.status);
+      storageOK = true;
     } catch(e){
       storageOK = false;
-      console.error('Could not save progress', e);
+      console.error('Could not save progress to shared storage', e);
     }
   }
 
@@ -1284,8 +1394,10 @@
 
     var totalCheckable = 0, totalDone = 0;
     WEEKS.forEach(function(w){
-      state[w.n].forEach(function(slot){
-        if(isCheckable(slot.type)){ totalCheckable++; if(slot.done) totalDone++; }
+      state[w.n].forEach(function(daySlot){
+        daySlot.items.forEach(function(it){
+          if(isCheckable(it.type)){ totalCheckable++; if(it.done) totalDone++; }
+        });
       });
     });
     var pct = totalCheckable ? Math.round(totalDone/totalCheckable*100) : 0;
@@ -1309,8 +1421,11 @@
     wrap.innerHTML = '';
     WEEKS.forEach(function(w){
       var slots = state[w.n];
-      var checkable = slots.filter(function(s){return isCheckable(s.type);});
-      var done = checkable.filter(function(s){return s.done;}).length;
+      var checkable = [];
+      slots.forEach(function(daySlot){
+        daySlot.items.forEach(function(it){ if(isCheckable(it.type)) checkable.push(it); });
+      });
+      var done = checkable.filter(function(it){return it.done;}).length;
       var full = checkable.length && done === checkable.length;
       var isCur = w.n === currentWeek;
       var h = isCur ? 14 : (full ? 10 : 6);
@@ -1344,61 +1459,124 @@
       : 'Now tap the arrows on the day you want to swap it with.';
   }
 
+  function escapeHtml(str){
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
   function renderDays(){
     var w = WEEKS[currentWeek-1];
     var list = document.getElementById('dayList');
     list.innerHTML = '';
     var slots = state[currentWeek];
 
-    slots.forEach(function(slot, idx){
+    slots.forEach(function(daySlot, idx){
       var dt = dateForSlot(w, idx);
-      var checkable = isCheckable(slot.type);
       var selected = selectedIdx === idx;
+      var items = daySlot.items;
+      var checkableItems = items.filter(function(it){ return isCheckable(it.type); });
+      var allDone = checkableItems.length > 0 && checkableItems.every(function(it){ return it.done; });
+      var isDim = allDone || checkableItems.length === 0;
 
       var row = document.createElement('div');
       var classes = ['day-row'];
       if(selected) classes.push('selected');
-      if(slot.done || slot.type === 'rest') classes.push('dim');
+      if(isDim) classes.push('dim');
       row.className = classes.join(' ');
 
-      var kickerLabel = slot.type === 'race' ? 'Race Day' : (slot.type === 'run' ? 'Run' : (slot.type === 'gym' ? 'Gym' : 'Rest'));
+      var noteKey = currentWeek + '-' + idx;
+      var noteOpen = !!openNotes[noteKey] || (daySlot.note && daySlot.note.length > 0);
+
+      var itemsHtml = items.map(function(item, itemIdx){
+        var checkable = isCheckable(item.type);
+        var kickerLabel = item.type === 'race' ? 'Race Day' : (item.type === 'run' ? 'Run' : (item.type === 'gym' ? 'Gym' : 'Rest'));
+        return '<div class="day-item-row">' +
+          '<div class="day-item-body">' +
+            '<div class="day-kicker">' + kickerLabel + '</div>' +
+            '<p class="day-title">' + item.title + (item.duration ? '<span class="dur">' + item.duration + '</span>' : '') + '</p>' +
+            (item.detail ? '<p class="day-detail' + (item.pattern ? ' pattern-detail' : '') + '">' + item.detail + '</p>' : '') +
+          '</div>' +
+          '<div class="day-item-actions">' +
+            (checkable ?
+              '<button type="button" class="check-btn" data-item-idx="' + itemIdx + '" aria-label="Mark ' + item.title + (item.done ? ' not done' : ' complete') + '" aria-pressed="' + (!!item.done) + '">' +
+                '<span class="check-box' + (item.done ? ' checked' : '') + '">' +
+                  (item.done ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>' : '') +
+                '</span>' +
+              '</button>'
+            : '') +
+            (items.length > 1 ?
+              '<button type="button" class="remove-item-btn" data-item-idx="' + itemIdx + '" title="Remove this" aria-label="Remove ' + item.title + '">&times;</button>'
+            : '') +
+          '</div>' +
+        '</div>';
+      }).join('');
 
       row.innerHTML =
         '<div class="day-date"><div class="dow">' + DAY_LABELS[idx] + '</div><div class="dnum">' + dt.getDate() + '</div></div>' +
-        '<div class="day-body">' +
-          '<div class="day-kicker">' + kickerLabel + '</div>' +
-          '<p class="day-title">' + slot.title + (slot.duration ? '<span class="dur">' + slot.duration + '</span>' : '') + '</p>' +
-          (slot.detail ? '<p class="day-detail' + (slot.pattern ? ' pattern-detail' : '') + '">' + slot.detail + '</p>' : '') +
-        '</div>' +
-        '<div class="day-actions">' +
-          (checkable ?
-            '<button type="button" class="check-btn" aria-label="Mark ' + slot.title + (slot.done ? ' not done' : ' complete') + '" aria-pressed="' + (!!slot.done) + '">' +
-              '<span class="check-box' + (slot.done ? ' checked' : '') + '">' +
-                (slot.done ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>' : '') +
-              '</span>' +
-            '</button>'
+        '<div class="day-main">' +
+          itemsHtml +
+          '<div class="day-add-bar">' +
+            '<button type="button" class="add-item-btn" data-add-type="run">+ Run</button>' +
+            '<button type="button" class="add-item-btn" data-add-type="gym">+ Gym</button>' +
+            '<button type="button" class="note-toggle-btn' + (daySlot.note ? ' has-note' : '') + '">' + (daySlot.note ? 'Note ✓' : '+ Note') + '</button>' +
+          '</div>' +
+          (noteOpen ?
+            '<div class="day-note-wrap"><textarea class="day-note-input" placeholder="Add a note for this day…" rows="2">' + escapeHtml(daySlot.note || '') + '</textarea></div>'
           : '') +
-          '<button type="button" class="swap-btn' + (selected ? ' active' : '') + '" title="Tap two days to swap their workouts" aria-label="Select ' + DAY_LABELS[idx] + ' to swap with another day">' +
-            (selected ?
-              '<span class="swap-label">SWAP</span>' :
-              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M7 8h13l-3-3"/><path d="M17 16H4l3 3"/></svg>'
-            ) +
-          '</button>' +
-        '</div>';
+        '</div>' +
+        '<button type="button" class="day-swap-btn' + (selected ? ' active' : '') + '" title="Tap two days to swap their workouts" aria-label="Select ' + DAY_LABELS[idx] + ' to swap with another day">' +
+          (selected ?
+            '<span class="swap-label">SWAP</span>' :
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M7 8h13l-3-3"/><path d="M17 16H4l3 3"/></svg>'
+          ) +
+        '</button>';
 
-      if(checkable){
-        var checkBtn = row.querySelector('.check-btn');
-        checkBtn.addEventListener('click', function(){
-          slot.done = !slot.done;
-          if(slot.done){
-            if(slot.type === 'race') celebrateRace(); else celebrate();
+      row.querySelectorAll('.check-btn').forEach(function(btn){
+        var itemIdx = parseInt(btn.getAttribute('data-item-idx'), 10);
+        btn.addEventListener('click', function(){
+          var item = daySlot.items[itemIdx];
+          item.done = !item.done;
+          if(item.done){
+            if(item.type === 'race') celebrateRace(); else celebrate();
           }
           saveState();
           renderAll();
         });
+      });
+
+      row.querySelectorAll('.remove-item-btn').forEach(function(btn){
+        var itemIdx = parseInt(btn.getAttribute('data-item-idx'), 10);
+        btn.addEventListener('click', function(){
+          daySlot.items.splice(itemIdx, 1);
+          saveState();
+          renderAll();
+        });
+      });
+
+      row.querySelectorAll('.add-item-btn').forEach(function(btn){
+        var type = btn.getAttribute('data-add-type');
+        btn.addEventListener('click', function(){
+          daySlot.items.push(makeExtraItem(type));
+          saveState();
+          renderAll();
+        });
+      });
+
+      var noteToggleBtn = row.querySelector('.note-toggle-btn');
+      noteToggleBtn.addEventListener('click', function(){
+        openNotes[noteKey] = !noteOpen;
+        renderAll();
+      });
+
+      var noteInput = row.querySelector('.day-note-input');
+      if(noteInput){
+        noteInput.addEventListener('input', function(){
+          daySlot.note = noteInput.value;
+          clearTimeout(noteSaveTimers[noteKey]);
+          noteSaveTimers[noteKey] = setTimeout(function(){ saveState(); }, 600);
+        });
       }
 
-      var swapBtn = row.querySelector('.swap-btn');
+      var swapBtn = row.querySelector('.day-swap-btn');
       swapBtn.addEventListener('click', function(){
         if(selectedIdx === null){ selectedIdx = idx; renderAll(); return; }
         if(selectedIdx === idx){ selectedIdx = null; renderAll(); return; }
@@ -1438,6 +1616,84 @@
     });
   }
 
+  /* ---------------- Streak & Bonus Animals ---------------- */
+  var BONUS_ANIMALS = [
+    { id:'otter', caption:'5-day streak! On a roll!',
+      svg:'<ellipse cx="50" cy="68" rx="26" ry="25" fill="#B8895D"/><ellipse cx="50" cy="72" rx="14" ry="13" fill="#E8D4B8"/><circle cx="50" cy="36" r="20" fill="#B8895D"/><circle cx="33" cy="22" r="6" fill="#B8895D"/><circle cx="67" cy="22" r="6" fill="#B8895D"/><ellipse cx="50" cy="43" rx="11" ry="8" fill="#E8D4B8"/><circle cx="43" cy="34" r="2.2" fill="#2B1E12"/><circle cx="57" cy="34" r="2.2" fill="#2B1E12"/><circle cx="50" cy="42" r="2" fill="#2B1E12"/><path d="M45 46q5 3 10 0" stroke="#2B1E12" stroke-width="1.5" fill="none" stroke-linecap="round"/><ellipse cx="25" cy="62" rx="6.5" ry="8.5" fill="#B8895D"/><ellipse cx="75" cy="62" rx="6.5" ry="8.5" fill="#B8895D"/><ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="#B8895D"/><ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="#B8895D"/>' },
+    { id:'koala', caption:'10 days strong!',
+      svg:'<ellipse cx="50" cy="68" rx="26" ry="25" fill="#A9A6A0"/><circle cx="24" cy="30" r="13" fill="#A9A6A0"/><circle cx="76" cy="30" r="13" fill="#A9A6A0"/><circle cx="24" cy="30" r="7" fill="#8B8781"/><circle cx="76" cy="30" r="7" fill="#8B8781"/><circle cx="50" cy="38" r="20" fill="#A9A6A0"/><ellipse cx="50" cy="45" rx="12" ry="9" fill="#FFFFFF" opacity="0.85"/><circle cx="43" cy="36" r="2.2" fill="#2A2622"/><circle cx="57" cy="36" r="2.2" fill="#2A2622"/><ellipse cx="50" cy="45" rx="4" ry="3" fill="#2A2622"/><ellipse cx="25" cy="62" rx="6.5" ry="8.5" fill="#A9A6A0"/><ellipse cx="75" cy="62" rx="6.5" ry="8.5" fill="#A9A6A0"/><ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="#A9A6A0"/><ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="#A9A6A0"/>' },
+    { id:'hedgehog', caption:'15 days! Unstoppable!',
+      svg:'<ellipse cx="50" cy="70" rx="27" ry="23" fill="#8B6F47"/><path d="M26 56 L17 47 L30 49 Z" fill="#8B6F47"/><path d="M33 46 L26 33 L40 41 Z" fill="#8B6F47"/><path d="M50 42 L45 27 L57 38 Z" fill="#8B6F47"/><path d="M67 46 L74 33 L60 41 Z" fill="#8B6F47"/><path d="M74 56 L83 47 L70 49 Z" fill="#8B6F47"/><ellipse cx="48" cy="64" rx="19" ry="17" fill="#EFE0C8"/><circle cx="41" cy="59" r="2.2" fill="#2B2016"/><circle cx="55" cy="59" r="2.2" fill="#2B2016"/><circle cx="46" cy="68" r="2.3" fill="#2B2016"/><ellipse cx="30" cy="88" rx="6" ry="4" fill="#8B6F47"/><ellipse cx="66" cy="88" rx="6" ry="4" fill="#8B6F47"/>' },
+    { id:'turtle', caption:'20 days?! Incredible!',
+      svg:'<ellipse cx="50" cy="68" rx="28" ry="24" fill="#6B9B5E"/><ellipse cx="50" cy="70" rx="18" ry="15" fill="#5A8A4D"/><circle cx="50" cy="34" r="18" fill="#A6C98A"/><circle cx="44" cy="32" r="2" fill="#2A2E1D"/><circle cx="56" cy="32" r="2" fill="#2A2E1D"/><path d="M46 40q4 2.5 8 0" stroke="#2A2E1D" stroke-width="1.4" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="60" rx="6" ry="9" fill="#A6C98A"/><ellipse cx="76" cy="60" rx="6" ry="9" fill="#A6C98A"/><ellipse cx="37" cy="90" rx="7" ry="5" fill="#A6C98A"/><ellipse cx="63" cy="90" rx="7" ry="5" fill="#A6C98A"/>' }
+  ];
+
+  function computeLongestStreak(){
+    var today = startOfDay(new Date());
+    var days = [];
+    WEEKS.forEach(function(w){
+      state[w.n].forEach(function(daySlot, idx){
+        days.push({ date: dateForSlot(w, idx), items: daySlot.items });
+      });
+    });
+    days.sort(function(a,b){ return a.date - b.date; });
+
+    var streak = 0, longest = 0;
+    for(var i=0;i<days.length;i++){
+      if(days[i].date > today) break;
+      var checkable = days[i].items.filter(function(it){ return isCheckable(it.type); });
+      if(checkable.length === 0) continue; // rest day, doesn't break or extend the streak
+      var allDone = checkable.every(function(it){ return it.done; });
+      if(allDone){ streak++; if(streak > longest) longest = streak; }
+      else { streak = 0; }
+    }
+    return longest;
+  }
+
+  function updateBonusAnimals(){
+    var longest = computeLongestStreak();
+    var unlocked = Math.min(Math.floor(longest / 5), BONUS_ANIMALS.length);
+
+    var leftWrap = document.getElementById('sideBuddyLeft');
+    var rightWrap = document.getElementById('sideBuddyRight');
+    if(!leftWrap || !rightWrap) return;
+
+    for(var i=0;i<unlocked;i++){
+      var animal = BONUS_ANIMALS[i];
+      if(document.getElementById('bonus-' + animal.id)) continue;
+      var target = (i % 2 === 0) ? leftWrap : rightWrap;
+      var el = document.createElement('div');
+      el.className = 'buddy-item';
+      el.id = 'bonus-' + animal.id;
+      el.innerHTML = '<svg class="buddy-svg" viewBox="0 0 100 100">' + animal.svg + '</svg>' +
+        '<div class="buddy-caption">' + animal.caption + '</div>';
+      target.appendChild(el);
+    }
+
+    if(unlocked > (state.unlockedBonusCount || 0)){
+      announceUnlock(BONUS_ANIMALS[unlocked - 1]);
+      state.unlockedBonusCount = unlocked;
+      saveState();
+    }
+  }
+
+  function announceUnlock(animal){
+    var overlay = document.getElementById('celebrateOverlay');
+    if(!overlay) return;
+    var animalSvg = document.getElementById('celebrateAnimalSvg');
+    var textEl = document.getElementById('celebrateText');
+    if(animalSvg) animalSvg.innerHTML = animal.svg;
+    if(textEl) textEl.textContent = 'New friend unlocked!';
+
+    overlay.classList.remove('show');
+    void overlay.offsetWidth;
+    overlay.classList.add('show');
+    clearTimeout(celebrateTimeout);
+    celebrateTimeout = setTimeout(function(){
+      overlay.classList.remove('show');
+    }, 2400);
+  }
+
   function renderAll(){
     renderStats();
     renderNav();
@@ -1447,6 +1703,7 @@
     renderDays();
     renderFootnote();
     updateSideBuddies();
+    updateBonusAnimals();
   }
 
   function goWeek(n){
@@ -1583,36 +1840,38 @@
   }
 
   /* ---------------- Side Buddy fly-away ---------------- */
-  document.querySelectorAll('.side-buddy .buddy-item').forEach(function(item){
+  // Delegated on document (not per-item) so dynamically unlocked bonus animals get this too.
+  document.addEventListener('click', function(e){
+    var item = e.target.closest('.buddy-item');
+    if(!item || !item.closest('.side-buddy')) return;
+    if(item.classList.contains('flying')) return;
+
     var caption = item.querySelector('.buddy-caption');
-    item.addEventListener('click', function(){
-      if(item.classList.contains('flying')) return;
 
-      // Random direction, biased upward (within ~80° of straight up either way) so buddies
-      // launch off into the sky rather than down into the page content.
-      var angle = (Math.random() * 160 - 80); // -80 to 80 degrees from vertical
-      var distance = 300 + Math.random() * 110; // 300-410px
-      var rad = angle * Math.PI / 180;
-      var dx = Math.sin(rad) * distance;
-      var dy = -Math.cos(rad) * distance;
-      var rot = (Math.random() < 0.5 ? -1 : 1) * (45 + Math.random() * 55); // 45-100deg, either direction
-      item.style.setProperty('--fly-x', dx.toFixed(1) + 'px');
-      item.style.setProperty('--fly-y', dy.toFixed(1) + 'px');
-      item.style.setProperty('--fly-rot', rot.toFixed(1) + 'deg');
+    // Random direction, biased upward (within ~80° of straight up either way) so buddies
+    // launch off into the sky rather than down into the page content.
+    var angle = (Math.random() * 160 - 80); // -80 to 80 degrees from vertical
+    var distance = 300 + Math.random() * 110; // 300-410px
+    var rad = angle * Math.PI / 180;
+    var dx = Math.sin(rad) * distance;
+    var dy = -Math.cos(rad) * distance;
+    var rot = (Math.random() < 0.5 ? -1 : 1) * (45 + Math.random() * 55); // 45-100deg, either direction
+    item.style.setProperty('--fly-x', dx.toFixed(1) + 'px');
+    item.style.setProperty('--fly-y', dy.toFixed(1) + 'px');
+    item.style.setProperty('--fly-rot', rot.toFixed(1) + 'deg');
 
-      var originalText = caption ? caption.textContent : '';
-      if(caption) caption.textContent = 'WEEEEEEEE!';
-      item.classList.add('flying');
-      setTimeout(function(){
-        item.classList.remove('flying');
-        if(caption) caption.textContent = originalText;
-      }, 1150);
-    });
+    var originalText = caption ? caption.textContent : '';
+    if(caption) caption.textContent = 'WEEEEEEEE!';
+    item.classList.add('flying');
+    setTimeout(function(){
+      item.classList.remove('flying');
+      if(caption) caption.textContent = originalText;
+    }, 1150);
   });
 
   /* ---------------- Init ---------------- */
-  (function init(){
-    loadState();
+  (async function init(){
+    await loadState();
     currentWeek = determineInitialWeek();
     renderAll();
   })();
