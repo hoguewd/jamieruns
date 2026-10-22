@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rothman Orthopaedics 8K — Training Log</title>
+<title>Jamie’s Q4 lock IN</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
@@ -619,6 +619,40 @@
     .celebrate-overlay.show .celebrate-content{animation:none !important;opacity:1 !important;transform:scale(1) !important;}
   }
 
+  /* ---------- Animal born / animal lost pop-ups ---------- */
+  .celebrate-sub{
+    display:none;
+    max-width:300px;
+    text-align:center;
+    font-family:var(--font-heading);
+    font-style:italic;
+    font-weight:600;
+    font-size:18px;
+    line-height:1.3;
+    color:var(--ink-dim);
+    background:var(--bg);
+    padding:3px 14px;
+    border-radius:var(--radius-md);
+  }
+  .celebrate-overlay.zoo-event .celebrate-sub{display:block;}
+  .celebrate-overlay.zoo-event.show .celebrate-content{animation-duration:2.4s;}
+  .celebrate-overlay.grave .celebrate-animal{
+    filter:grayscale(1) brightness(0.92) drop-shadow(0 10px 22px rgba(45,43,43,0.28));
+  }
+  .celebrate-overlay.grave .celebrate-text{
+    color:var(--ink-dim);
+    border-color:var(--ink-faint);
+  }
+  .celebrate-overlay.grave.show .celebrate-content{
+    animation:grave-drop 2.4s ease-in forwards;
+  }
+  @keyframes grave-drop{
+    0%{ transform:scale(0) rotate(0deg); opacity:0; }
+    15%{ transform:scale(1.1) rotate(0deg); opacity:1; }
+    45%{ transform:scale(1) rotate(-3deg); opacity:1; }
+    100%{ transform:translateY(90px) scale(0.85) rotate(70deg); opacity:0; }
+  }
+
   /* ---------- Race Finish Celebration ---------- */
   .race-overlay{
     position:fixed;
@@ -732,68 +766,86 @@
     .race-overlay.show .race-message{animation:none !important;opacity:1 !important;transform:scale(1) !important;}
   }
 
-  /* ---------- Side Buddies ---------- */
-  /* Mobile default: horizontal scrollable rows, in normal document flow */
-  .side-buddy{
+  /* ---------- Zoo (animals at the top) ---------- */
+  .zoo{
+    padding:16px 0 14px;
+    border-bottom:1px solid var(--divider);
+  }
+  .zoo-row{
     display:flex;
-    position:static;
-    flex-direction:row;
-    flex-wrap:nowrap;
+    flex-wrap:wrap;
     justify-content:center;
     align-items:flex-start;
-    gap:14px;
-    padding:6px 4px;
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    z-index:5;
+    gap:12px 10px;
   }
-  .side-buddy-right{margin-top:2px;}
   .buddy-item{
+    position:relative;
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:6px;
+    gap:5px;
+    width:66px;
     cursor:pointer;
-    flex:0 0 auto;
   }
   .buddy-item:hover .buddy-svg{filter:brightness(1.08);}
   .buddy-svg{
-    width:44px;height:44px;
+    width:52px;height:52px;
     transform-origin:50% 100%;
-    animation:buddy-dance 2.3s ease-in-out infinite;
+    animation:buddy-dance var(--dance-dur,2.3s) ease-in-out var(--dance-delay,0s) infinite;
   }
   .buddy-caption{
     max-width:66px;
     text-align:center;
     font-family:var(--font-heading);
     font-weight:600;
-    font-size:10.5px;
+    font-size:11px;
     font-style:italic;
     line-height:1.3;
     color:var(--ink-dim);
     border-top:1px solid var(--divider);
     padding-top:4px;
   }
-  /* Wide screens: fixed vertical columns hugging the page edges */
-  @media (min-width:980px){
-    .side-buddy{
-      position:fixed;
-      top:50%;
-      transform:translateY(-50%);
-      flex-direction:column;
-      gap:24px;
-      padding:0;
-      overflow:visible;
-    }
-    .side-buddy-left{left:20px;}
-    .side-buddy-right{right:20px;margin-top:0;}
-    .buddy-item{gap:9px;}
-    .buddy-svg{width:80px;height:80px;}
-    .buddy-caption{max-width:124px;font-size:14px;padding-top:6px;}
+  /* Lots of animals: drop the captions so the zoo stays compact */
+  .zoo.dense .buddy-item{width:52px;}
+  .zoo.dense .buddy-caption{display:none;}
+  .zoo.dense .buddy-item.flying .buddy-caption{
+    display:block;
+    position:absolute;
+    top:-20px;left:50%;
+    transform:translateX(-50%);
+    max-width:none;
+    white-space:nowrap;
+    border:0;padding:0;
+    font-size:14px;
   }
-  .side-buddy .buddy-item:nth-child(1) .buddy-svg{ animation-duration:2.1s; animation-delay:0s; }
-  .side-buddy .buddy-item:nth-child(2) .buddy-svg{ animation-duration:2.5s; animation-delay:0.28s; }
-  .side-buddy .buddy-item:nth-child(3) .buddy-svg{ animation-duration:2.85s; animation-delay:0.55s; }
+  .zoo-empty{
+    margin:6px 0;
+    font-family:var(--font-heading);
+    font-weight:700;
+    font-size:20px;
+    color:var(--ink-dim);
+  }
+  .zoo-status{margin-top:12px;text-align:center;}
+  .zoo-streak{
+    font-family:var(--font-heading);
+    font-weight:700;
+    font-size:16px;
+    line-height:1.35;
+    color:var(--accent-700);
+  }
+  .zoo-rule{
+    margin-top:2px;
+    font-size:13.5px;
+    font-style:italic;
+    color:var(--ink-faint);
+    line-height:1.45;
+  }
+  .zoo-grave{
+    margin-top:8px;
+    font-size:14px;
+    line-height:1.45;
+    color:var(--ink-dim);
+  }
   @keyframes buddy-dance{
     0%, 100%{ transform:translateY(0) rotate(0deg); }
     15%{ transform:translateY(-7px) rotate(-7deg); }
@@ -848,6 +900,7 @@
       <ellipse cx="64" cy="90" rx="8" ry="6" fill="#A67509"/>
     </svg>
     <div class="celebrate-text" id="celebrateText">Good job</div>
+    <div class="celebrate-sub" id="celebrateSub"></div>
   </div>
 </div>
 
@@ -855,7 +908,7 @@
   <div class="race-animals" id="raceAnimals"></div>
   <div class="race-message">
     <div class="race-title">CONGRATULATIONS, JAMIE!</div>
-    <div class="race-subtitle">You finished the Rothman Orthopaedics 8K! 🏁</div>
+    <div class="race-subtitle">You locked in all thirteen weeks! 🏁</div>
     <div class="race-tap-hint">tap anywhere to continue</div>
   </div>
 </div>
@@ -864,9 +917,18 @@
 
   <header>
     <p class="kicker">Training Log · Thirteen Weeks</p>
-    <h1>Rothman Orthopaedics 8K</h1>
-    <p class="subtitle">Saturday, November 21, 2026 · 11:00 AM start<br>25th &amp; Kelly Drive, Philadelphia</p>
+    <h1>Jamie’s Q4 lock IN</h1>
+    <p class="subtitle">Oct 19, 2026 – Jan 17, 2027</p>
   </header>
+
+  <section class="zoo" id="zoo" aria-label="Your animals">
+    <div class="zoo-row" id="zooRow" aria-hidden="true"></div>
+    <div class="zoo-status">
+      <div class="zoo-streak" id="zooStreak"></div>
+      <div class="zoo-rule">Five days in a row earns a new animal. Miss a day and one dies.</div>
+      <div class="zoo-grave" id="zooGrave"></div>
+    </div>
+  </section>
 
   <div class="stat-strip">
     <div class="stat-count">
@@ -956,123 +1018,6 @@
     </div>
   </section>
 
-  <div class="side-buddy side-buddy-left" id="sideBuddyLeft" aria-hidden="true">
-  <div class="buddy-item">
-    <svg class="buddy-svg" viewBox="0 0 100 100">
-      <ellipse cx="36" cy="14" rx="6.5" ry="14" fill="#D6D0C4" transform="rotate(-14 36 14)"/>
-      <ellipse cx="64" cy="14" rx="6.5" ry="14" fill="#D6D0C4" transform="rotate(14 64 14)"/>
-      <ellipse cx="36" cy="15" rx="3.2" ry="10" fill="#E8A5AF" transform="rotate(-14 36 15)"/>
-      <ellipse cx="64" cy="15" rx="3.2" ry="10" fill="#E8A5AF" transform="rotate(14 64 15)"/>
-      <ellipse cx="50" cy="68" rx="26" ry="25" fill="#D6D0C4"/>
-      <circle cx="50" cy="36" r="20" fill="#D6D0C4"/>
-      <ellipse cx="50" cy="42" rx="10" ry="7" fill="#FFFFFF" opacity="0.85"/>
-      <circle cx="43" cy="34" r="2.2" fill="#3A332E"/>
-      <circle cx="57" cy="34" r="2.2" fill="#3A332E"/>
-      <circle cx="50" cy="41" r="1.6" fill="#E8A5AF"/>
-      <rect x="47.8" y="43" width="1.8" height="3.2" rx="0.6" fill="#FFFFFF"/>
-      <rect x="50.4" y="43" width="1.8" height="3.2" rx="0.6" fill="#FFFFFF"/>
-      <ellipse cx="25" cy="62" rx="6.5" ry="8.5" fill="#D6D0C4"/>
-      <ellipse cx="75" cy="62" rx="6.5" ry="8.5" fill="#D6D0C4"/>
-      <ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="#D6D0C4"/>
-      <ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="#D6D0C4"/>
-    </svg>
-    <div class="buddy-caption" id="bunnyBubbleText">You've got this!</div>
-  </div>
-  <div class="buddy-item">
-    <svg class="buddy-svg" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="68" rx="26" ry="24" fill="#FFFFFF"/>
-      <circle cx="50" cy="36" r="20" fill="#FFFFFF"/>
-      <circle cx="30" cy="20" r="8" fill="#2B2B28"/>
-      <circle cx="70" cy="20" r="8" fill="#2B2B28"/>
-      <ellipse cx="39" cy="35" rx="7" ry="8" fill="#2B2B28"/>
-      <ellipse cx="61" cy="35" rx="7" ry="8" fill="#2B2B28"/>
-      <circle cx="39" cy="35" r="2.3" fill="#FFFFFF"/>
-      <circle cx="61" cy="35" r="2.3" fill="#FFFFFF"/>
-      <circle cx="50" cy="42" r="2" fill="#2B2B28"/>
-      <path d="M45 46q5 3 10 0" stroke="#2B2B28" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <ellipse cx="24" cy="62" rx="7" ry="9" fill="#2B2B28"/>
-      <ellipse cx="76" cy="62" rx="7" ry="9" fill="#2B2B28"/>
-      <ellipse cx="37" cy="90" rx="8" ry="6" fill="#2B2B28"/>
-      <ellipse cx="63" cy="90" rx="8" ry="6" fill="#2B2B28"/>
-    </svg>
-    <div class="buddy-caption" id="pandaBubbleText">Proud of you already.</div>
-  </div>
-  <div class="buddy-item">
-    <svg class="buddy-svg" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="68" rx="26" ry="25" fill="#A8A29A"/>
-      <circle cx="50" cy="36" r="20" fill="#A8A29A"/>
-      <circle cx="30" cy="18" r="8" fill="#A8A29A"/>
-      <circle cx="70" cy="18" r="8" fill="#A8A29A"/>
-      <circle cx="30" cy="18" r="4" fill="#E8E3D8"/>
-      <circle cx="70" cy="18" r="4" fill="#E8E3D8"/>
-      <ellipse cx="50" cy="44" rx="10" ry="7" fill="#FFFFFF" opacity="0.9"/>
-      <ellipse cx="41" cy="33" rx="7.5" ry="6.5" fill="#2B2B28"/>
-      <ellipse cx="59" cy="33" rx="7.5" ry="6.5" fill="#2B2B28"/>
-      <circle cx="50" cy="42" r="2" fill="#1A1A18"/>
-      <path d="M45 46q5 3 10 0" stroke="#2B2B28" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <ellipse cx="25" cy="62" rx="6.5" ry="8.5" fill="#A8A29A"/>
-      <ellipse cx="75" cy="62" rx="6.5" ry="8.5" fill="#A8A29A"/>
-      <ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="#A8A29A"/>
-      <ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="#A8A29A"/>
-    </svg>
-    <div class="buddy-caption" id="raccoonBubbleText">Small steps, big wins.</div>
-  </div>
-</div>
-
-<div class="side-buddy side-buddy-right" id="sideBuddyRight" aria-hidden="true">
-  <div class="buddy-item">
-    <svg class="buddy-svg" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="68" rx="26" ry="25" fill="#F0DCC0"/>
-      <ellipse cx="29" cy="40" rx="8" ry="16" fill="#8B5A2B" transform="rotate(-18 29 40)"/>
-      <ellipse cx="71" cy="40" rx="8" ry="16" fill="#8B5A2B" transform="rotate(18 71 40)"/>
-      <circle cx="50" cy="35" r="21" fill="#F0DCC0"/>
-      <ellipse cx="50" cy="42" rx="10" ry="7" fill="#FFFFFF" opacity="0.85"/>
-      <circle cx="43" cy="33" r="2.2" fill="#3A2A1A"/>
-      <circle cx="57" cy="33" r="2.2" fill="#3A2A1A"/>
-      <circle cx="50" cy="41" r="2.3" fill="#3A2A1A"/>
-      <path d="M45 45q5 3 10 0" stroke="#3A2A1A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <ellipse cx="25" cy="62" rx="6.5" ry="8.5" fill="#F0DCC0"/>
-      <ellipse cx="75" cy="62" rx="6.5" ry="8.5" fill="#F0DCC0"/>
-      <ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="#F0DCC0"/>
-      <ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="#F0DCC0"/>
-    </svg>
-    <div class="buddy-caption" id="dogBubbleText">One step at a time.</div>
-  </div>
-  <div class="buddy-item">
-    <svg class="buddy-svg" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="60" rx="27" ry="30" fill="#AC94D4"/>
-      <path d="M18 30 L30 18 L34 34 Z" fill="#AC94D4"/>
-      <path d="M82 30 L70 18 L66 34 Z" fill="#AC94D4"/>
-      <circle cx="37" cy="42" r="13" fill="#FFFFFF"/>
-      <circle cx="63" cy="42" r="13" fill="#FFFFFF"/>
-      <circle cx="37" cy="42" r="6.5" fill="#2E2440"/>
-      <circle cx="63" cy="42" r="6.5" fill="#2E2440"/>
-      <path d="M50 50 L45 58 L55 58 Z" fill="#E8952F"/>
-      <ellipse cx="20" cy="66" rx="7" ry="10" fill="#AC94D4"/>
-      <ellipse cx="80" cy="66" rx="7" ry="10" fill="#AC94D4"/>
-      <ellipse cx="38" cy="90" rx="7" ry="5" fill="#E8952F"/>
-      <ellipse cx="62" cy="90" rx="7" ry="5" fill="#E8952F"/>
-    </svg>
-    <div class="buddy-caption" id="owlBubbleText">Stronger than yesterday.</div>
-  </div>
-  <div class="buddy-item">
-    <svg class="buddy-svg" viewBox="0 0 100 100">
-      <ellipse cx="50" cy="65" rx="24" ry="28" fill="#2E3A45"/>
-      <ellipse cx="50" cy="68" rx="15" ry="20" fill="#FFFFFF"/>
-      <circle cx="50" cy="34" r="17" fill="#2E3A45"/>
-      <ellipse cx="50" cy="38" rx="10" ry="9" fill="#FFFFFF"/>
-      <circle cx="45" cy="35" r="2" fill="#1A2027"/>
-      <circle cx="55" cy="35" r="2" fill="#1A2027"/>
-      <path d="M50 39 L46 43 L54 43 Z" fill="#E8952F"/>
-      <ellipse cx="22" cy="60" rx="7" ry="14" fill="#2E3A45" transform="rotate(-20 22 60)"/>
-      <ellipse cx="78" cy="60" rx="7" ry="14" fill="#2E3A45" transform="rotate(20 78 60)"/>
-      <ellipse cx="38" cy="92" rx="7" ry="4" fill="#E8952F"/>
-      <ellipse cx="62" cy="92" rx="7" ry="4" fill="#E8952F"/>
-    </svg>
-    <div class="buddy-caption" id="penguinBubbleText">Keep going, friend!</div>
-  </div>
-</div>
-
   <p class="footnote" id="footnote">Loading your saved progress…</p>
 </div>
 
@@ -1091,7 +1036,7 @@
   function rest(title,detail){ return d('rest',title||'Rest','',detail||'Full rest day'); }
 
   var WEEKS = [
-    { n:1, start:'2026-08-24', phase:'Base Building',
+    { n:1, start:'2026-10-19', phase:'Base Building',
       quote:'"Nobody\u2019s coming to lace up your shoes for you. Get out the door anyway."',
       slots:[
       d('run','Run 1 · Easy','25 min','Run 4 minutes, then walk 1 minute. Repeat that cycle until the 25 minutes is up.',true),
@@ -1101,7 +1046,7 @@
       d('run','Run 3 · Long','30 min','Run 4 minutes, then walk 1 minute. Repeat that cycle until the 30 minutes is up.',true),
       gym()
     ]},
-    { n:2, start:'2026-08-31', phase:'Base Building',
+    { n:2, start:'2026-10-26', phase:'Base Building',
       quote:'"Comfortable is where progress goes to die. Get uncomfortable, one minute at a time."',
       slots:[
       d('run','Run 1 · Easy','25 min','Run 5 minutes, then walk 1 minute. Repeat that cycle until the 25 minutes is up.',true),
@@ -1111,7 +1056,7 @@
       d('run','Run 3 · Long','35 min','Run 5 minutes, then walk 1 minute. Repeat that cycle until the 35 minutes is up.',true),
       gym()
     ]},
-    { n:3, start:'2026-09-07', phase:'Base Building',
+    { n:3, start:'2026-11-02', phase:'Base Building',
       quote:'"That first taste of hard effort? Get used to it. Comfortable never finished anything."',
       slots:[
       d('run','Run 1 · Easy','30 min','Run 8 minutes, then walk 1 minute. Repeat that cycle until the 30 minutes is up.',true),
@@ -1121,7 +1066,7 @@
       d('run','Run 3 · Long','40 min','Run 8 minutes, then walk 1 minute. Repeat that cycle until the 40 minutes is up.',true),
       gym()
     ]},
-    { n:4, start:'2026-09-14', phase:'Cutback',
+    { n:4, start:'2026-11-09', phase:'Cutback',
       quote:'"Backing off isn\u2019t weak. It\u2019s the discipline to build instead of break yourself down."',
       slots:[
       d('run','Run 1 · Easy','25 min','Run 8 minutes, then walk 1 minute. Repeat that cycle until the 25 minutes is up.',true),
@@ -1131,7 +1076,7 @@
       d('run','Run 3 · Long','30 min','Same 8 min run / 1 min walk pattern as Run 1 and Run 2 this week \u2014 repeat until the 30 minutes is up. Lower total volume, not lower intensity.',true),
       gym()
     ]},
-    { n:5, start:'2026-09-21', phase:'Build Phase',
+    { n:5, start:'2026-11-16', phase:'Build Phase',
       quote:'"The walk breaks are gone. So is every excuse you were hiding behind them."',
       slots:[
       d('run','Run 1 · Easy','25 min','Continuous running begins — no scheduled walk breaks'),
@@ -1141,7 +1086,7 @@
       d('run','Run 3 · Long','40 min','Continuous'),
       gym()
     ]},
-    { n:6, start:'2026-09-28', phase:'Build Phase',
+    { n:6, start:'2026-11-23', phase:'Build Phase',
       quote:'"The burn in your legs during those pickups is the work becoming real. Lean into it."',
       slots:[
       d('run','Run 1 · Easy','30 min',''),
@@ -1151,7 +1096,7 @@
       d('run','Run 3 · Long','45 min',''),
       gym()
     ]},
-    { n:7, start:'2026-10-05', phase:'Build Phase',
+    { n:7, start:'2026-11-30', phase:'Build Phase',
       quote:'"You don\u2019t find out what you\u2019re made of on the easy days."',
       slots:[
       d('run','Run 1 · Easy','30 min',''),
@@ -1161,7 +1106,7 @@
       d('run','Run 3 · Long','50 min',''),
       gym()
     ]},
-    { n:8, start:'2026-10-12', phase:'Cutback',
+    { n:8, start:'2026-12-07', phase:'Cutback',
       quote:'"Smart enough to ease up, hungry enough to come back harder next week."',
       slots:[
       d('run','Run 1 · Easy','25 min',''),
@@ -1171,7 +1116,7 @@
       d('run','Run 3 · Long','35 min',''),
       gym()
     ]},
-    { n:9, start:'2026-10-19', phase:'Peak Phase',
+    { n:9, start:'2026-12-14', phase:'Peak Phase',
       quote:'"Ten hard minutes is nothing next to the sixty you\u2019re about to run. Earn it."',
       slots:[
       d('run','Run 1 · Easy','30 min',''),
@@ -1181,7 +1126,7 @@
       d('run','Run 3 · Long','55 min',''),
       gym()
     ]},
-    { n:10, start:'2026-10-26', phase:'Peak Phase',
+    { n:10, start:'2026-12-21', phase:'Peak Phase',
       quote:'"Your longest run yet. Nobody\u2019s grading on how easy it feels. Finish it anyway."',
       slots:[
       d('run','Run 1 · Easy','30 min',''),
@@ -1191,7 +1136,7 @@
       d('run','Run 3 · Long','60 min','Peak long run'),
       gym()
     ]},
-    { n:11, start:'2026-11-02', phase:'Peak Phase',
+    { n:11, start:'2026-12-28', phase:'Peak Phase',
       quote:'"Race pace isn\u2019t a suggestion anymore. It\u2019s a promise you\u2019re making to yourself."',
       slots:[
       d('run','Run 1 · Easy','30 min',''),
@@ -1201,7 +1146,7 @@
       d('run','Run 3 · Long','55 min',''),
       gym()
     ]},
-    { n:12, start:'2026-11-09', phase:'Taper',
+    { n:12, start:'2027-01-04', phase:'Taper',
       quote:'"The work is already done. Now shut up and trust it."',
       slots:[
       d('run','Run 1 · Easy','20 min',''),
@@ -1211,19 +1156,20 @@
       d('run','Run 3 · Long','35 min','Easy pace'),
       gym('Go light — ease off leg work')
     ]},
-    { n:13, start:'2026-11-16', phase:'Race Week',
-      quote:'"Race week. No more talk. Show up and take what\u2019s yours."',
+    { n:13, start:'2027-01-11', phase:'Finale Week',
+      quote:'"Final week. No more talk. Show up and take what\u2019s yours."',
       slots:[
       d('run','Run 1 · Easy','20 min',''),
       gym('Light session only, if you feel restless'), rest(),
       d('run','Run 2 · Strides','15 min','A few 30-sec strides'),
       rest('Rest','Light or fully off — skip the gym'),
-      d('race','Rothman Orthopaedics 8K','4.97 mi','11:00 AM start · 25th & Kelly Dr'),
+      d('race','Finale · 8K','4.97 mi','The full 4.97 miles. Your pace, your call. Finish what you started on Oct 19.'),
       rest('Recovery','Rest, hydrate, and celebrate the finish!')
     ]}
   ];
 
-  var RACE_DATE = new Date(2026,10,21); // Nov 21 2026
+  var PLAN_START = '2026-10-19';            // Week 1 begins this Monday
+  var FINALE_DATE = new Date(2027,0,16);    // Sat Jan 16 2027, the 8K finale in Week 13
   var STORAGE_KEY = 'rothman-8k-plan-v1';
   var ENCOURAGEMENT = [
     "You've got this, Jamie!",
@@ -1273,17 +1219,22 @@
   function cloneDefault(weekN){
     var w = WEEKS[weekN-1];
     return w.slots.map(function(s){
-      return { items:[{type:s.type, title:s.title, duration:s.duration, detail:s.detail, pattern:!!s.pattern, done:false}], note:'' };
+      return { items:[{type:s.type, title:s.title, duration:s.duration, detail:s.detail, pattern:!!s.pattern, done:false, extra:false}], note:'' };
     });
   }
 
+  // "extra" items are ones the user stacked on top of the plan (the +Run/+Gym buttons).
+  // They're tracked and checkable like anything else, but a forgotten extra shouldn't
+  // silently block the streak/bonus-animal system for a day that was otherwise fully done.
   function makeExtraItem(type){
-    if(type === 'gym') return {type:'gym', title:'Gym', duration:'', detail:GYM_DEFAULT, pattern:false, done:false};
-    return {type:'run', title:'Run · Extra', duration:'', detail:'', pattern:false, done:false};
+    if(type === 'gym') return {type:'gym', title:'Gym', duration:'', detail:GYM_DEFAULT, pattern:false, done:false, extra:true};
+    return {type:'run', title:'Run · Extra', duration:'', detail:'', pattern:false, done:false, extra:true};
   }
 
   function buildDefaultState(){
-    var s = { unlockedBonusCount: 0 };
+    // planStart marks which run of the plan this data belongs to. earnedSeen / killsSeen
+    // remember how many animal births and deaths have already been announced.
+    var s = { planStart: PLAN_START, earnedSeen: 0, killsSeen: 0 };
     WEEKS.forEach(function(w){ s[w.n] = cloneDefault(w.n); });
     return s;
   }
@@ -1292,16 +1243,23 @@
   // or the older flat {type,title,duration,detail,pattern,done} shape used before stacking/notes existed.
   function migrateDaySlot(raw){
     if(raw && Array.isArray(raw.items)){
-      return { items: raw.items, note: (typeof raw.note === 'string' ? raw.note : '') };
+      var items = raw.items.map(function(it){
+        return { type:it.type, title:it.title, duration:it.duration, detail:it.detail, pattern:!!it.pattern, done:!!it.done, extra:!!it.extra };
+      });
+      return { items: items, note: (typeof raw.note === 'string' ? raw.note : '') };
     }
     if(raw && raw.type){
-      return { items:[{type:raw.type, title:raw.title, duration:raw.duration, detail:raw.detail, pattern:!!raw.pattern, done:!!raw.done}], note:'' };
+      return { items:[{type:raw.type, title:raw.title, duration:raw.duration, detail:raw.detail, pattern:!!raw.pattern, done:!!raw.done, extra:false}], note:'' };
     }
     return null;
   }
 
   function normalizeState(raw){
-    var out = { unlockedBonusCount: (raw && typeof raw.unlockedBonusCount === 'number') ? raw.unlockedBonusCount : 0 };
+    var out = {
+      planStart: PLAN_START,
+      earnedSeen: (raw && typeof raw.earnedSeen === 'number') ? raw.earnedSeen : 0,
+      killsSeen: (raw && typeof raw.killsSeen === 'number') ? raw.killsSeen : 0
+    };
     WEEKS.forEach(function(w){
       var def = cloneDefault(w.n);
       var rawWeek = raw ? raw[w.n] : null;
@@ -1314,22 +1272,62 @@
     return out;
   }
 
+  // True if this saved blob has any real progress in it (a checked-off item),
+  // as opposed to a totally fresh/blank plan.
+  function hasAnyProgress(raw){
+    if(!raw) return false;
+    for(var i=0;i<WEEKS.length;i++){
+      var wk = raw[WEEKS[i].n];
+      if(!Array.isArray(wk)) continue;
+      for(var j=0;j<wk.length;j++){
+        var day = wk[j];
+        var items = (day && Array.isArray(day.items)) ? day.items : (day && day.type ? [day] : []);
+        for(var k=0;k<items.length;k++){ if(items[k] && items[k].done) return true; }
+      }
+    }
+    return false;
+  }
+
+  // Reads this browser's own backup copy, but only if it belongs to the current plan dates.
+  function readLocalBackup(){
+    try{
+      var localRaw = localStorage.getItem(STORAGE_KEY);
+      if(!localRaw) return null;
+      var parsed = JSON.parse(localRaw);
+      if(!parsed || parsed.planStart !== PLAN_START) return null;
+      return parsed;
+    } catch(e){ return null; }
+  }
+
   async function loadState(){
     try{
       var res = await fetch('/api/state', { method: 'GET' });
       if(!res.ok) throw new Error('Bad response: ' + res.status);
       var raw = await res.json();
-      state = raw ? normalizeState(raw) : buildDefaultState();
       storageOK = true;
+      if(raw && raw.planStart === PLAN_START){
+        state = normalizeState(raw);
+      } else {
+        // Nothing saved yet for this run of the plan. That's either a brand-new start, or
+        // leftover data from before the Oct 19 restart (kept in this browser as an archive).
+        if(raw){
+          try{ localStorage.setItem(STORAGE_KEY + '-archive', JSON.stringify(raw)); } catch(e1){ /* ignore */ }
+        }
+        // If this browser has newer progress for the current plan that never reached shared
+        // storage, recover it instead of starting blank.
+        var local = readLocalBackup();
+        if(local && hasAnyProgress(local)){
+          state = normalizeState(local);
+          saveState();
+        } else {
+          state = buildDefaultState();
+        }
+      }
     } catch(e){
       console.error('Could not load shared progress, falling back to this browser only', e);
       storageOK = false;
-      try{
-        var localRaw = localStorage.getItem(STORAGE_KEY);
-        state = localRaw ? normalizeState(JSON.parse(localRaw)) : buildDefaultState();
-      } catch(e2){
-        state = buildDefaultState();
-      }
+      var fallback = readLocalBackup();
+      state = fallback ? normalizeState(fallback) : buildDefaultState();
     }
   }
 
@@ -1381,16 +1379,21 @@
 
   function isCheckable(type){ return type !== 'rest'; }
 
+  // What counts toward the streak: the day's originally-planned items only.
+  // Items the user stacked on top of the plan (extra:true) don't have to be
+  // checked off for the day to still count as a completed streak day.
+  function isStreakItem(it){ return isCheckable(it.type) && !it.extra; }
+
   /* ---------------- Render ---------------- */
   function renderStats(){
     var today = startOfDay(new Date());
-    var diff = Math.round((startOfDay(RACE_DATE) - today) / 86400000);
+    var diff = Math.round((startOfDay(FINALE_DATE) - today) / 86400000);
     var numEl = document.getElementById('countdownNum');
     var labEl = document.getElementById('countdownLabel');
     if(diff > 1){ numEl.textContent = diff; labEl.textContent = 'days to go'; }
     else if(diff === 1){ numEl.textContent = diff; labEl.textContent = 'day to go'; }
-    else if(diff === 0){ numEl.textContent = '0'; labEl.textContent = 'race day'; }
-    else { numEl.textContent = '—'; labEl.textContent = 'race complete'; }
+    else if(diff === 0){ numEl.textContent = '0'; labEl.textContent = 'finale day'; }
+    else { numEl.textContent = '—'; labEl.textContent = 'plan complete'; }
 
     var totalCheckable = 0, totalDone = 0;
     WEEKS.forEach(function(w){
@@ -1488,7 +1491,7 @@
 
       var itemsHtml = items.map(function(item, itemIdx){
         var checkable = isCheckable(item.type);
-        var kickerLabel = item.type === 'race' ? 'Race Day' : (item.type === 'run' ? 'Run' : (item.type === 'gym' ? 'Gym' : 'Rest'));
+        var kickerLabel = item.type === 'race' ? 'Finale' : (item.type === 'run' ? 'Run' : (item.type === 'gym' ? 'Gym' : 'Rest'));
         return '<div class="day-item-row">' +
           '<div class="day-item-body">' +
             '<div class="day-kicker">' + kickerLabel + '</div>' +
@@ -1596,39 +1599,67 @@
   function renderFootnote(){
     var el = document.getElementById('footnote');
     el.textContent = storageOK
-      ? 'Progress saves in this browser. Checkmarks and swaps persist; nothing is sent anywhere.'
-      : 'Your browser is blocking saved progress (e.g. private/incognito mode) — checkmarks won\'t persist here.';
+      ? 'Your progress saves automatically and shows up the same on every device.'
+      : 'Can\u2019t reach saved progress right now. Checkmarks are kept in this browser until the connection is back.';
   }
 
-  var BUDDY_TEXT_IDS = [
-    ['bunnyBubbleText', 0],
-    ['pandaBubbleText', 1],
-    ['raccoonBubbleText', 2],
-    ['dogBubbleText', 3],
-    ['owlBubbleText', 4],
-    ['penguinBubbleText', 5]
-  ];
+  /* ---------------- Zoo: animals earned and lost ---------------- */
+  var START_HERD = 6;       // the six original friends
+  var STREAK_FOR_NEW = 5;   // days in a row of finished workouts that earns a new animal
 
-  function updateSideBuddies(){
-    BUDDY_TEXT_IDS.forEach(function(pair){
-      var el = document.getElementById(pair[0]);
-      if(el) el.textContent = ENCOURAGEMENT[(currentWeek - 1 + pair[1]) % ENCOURAGEMENT.length];
-    });
-  }
-
-  /* ---------------- Streak & Bonus Animals ---------------- */
-  var BONUS_ANIMALS = [
-    { id:'otter', caption:'5-day streak! On a roll!',
+  // Roster order = the order animals arrive. The first six reuse the pop-up artwork and
+  // their captions rotate with the week; the rest are earned, one per five-day streak.
+  var ROSTER = [
+    { name:'Bunny',   slot:0, svg:CELEBRATE_ANIMALS[0] },
+    { name:'Panda',   slot:1, svg:CELEBRATE_ANIMALS[1] },
+    { name:'Raccoon', slot:2, svg:CELEBRATE_ANIMALS[2] },
+    { name:'Dog',     slot:3, svg:CELEBRATE_ANIMALS[3] },
+    { name:'Owl',     slot:4, svg:CELEBRATE_ANIMALS[4] },
+    { name:'Penguin', slot:5, svg:CELEBRATE_ANIMALS[5] },
+    { name:'Otter', caption:'On a roll!',
       svg:'<ellipse cx="50" cy="68" rx="26" ry="25" fill="#B8895D"/><ellipse cx="50" cy="72" rx="14" ry="13" fill="#E8D4B8"/><circle cx="50" cy="36" r="20" fill="#B8895D"/><circle cx="33" cy="22" r="6" fill="#B8895D"/><circle cx="67" cy="22" r="6" fill="#B8895D"/><ellipse cx="50" cy="43" rx="11" ry="8" fill="#E8D4B8"/><circle cx="43" cy="34" r="2.2" fill="#2B1E12"/><circle cx="57" cy="34" r="2.2" fill="#2B1E12"/><circle cx="50" cy="42" r="2" fill="#2B1E12"/><path d="M45 46q5 3 10 0" stroke="#2B1E12" stroke-width="1.5" fill="none" stroke-linecap="round"/><ellipse cx="25" cy="62" rx="6.5" ry="8.5" fill="#B8895D"/><ellipse cx="75" cy="62" rx="6.5" ry="8.5" fill="#B8895D"/><ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="#B8895D"/><ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="#B8895D"/>' },
-    { id:'koala', caption:'10 days strong!',
+    { name:'Koala', caption:'Locked in.',
       svg:'<ellipse cx="50" cy="68" rx="26" ry="25" fill="#A9A6A0"/><circle cx="24" cy="30" r="13" fill="#A9A6A0"/><circle cx="76" cy="30" r="13" fill="#A9A6A0"/><circle cx="24" cy="30" r="7" fill="#8B8781"/><circle cx="76" cy="30" r="7" fill="#8B8781"/><circle cx="50" cy="38" r="20" fill="#A9A6A0"/><ellipse cx="50" cy="45" rx="12" ry="9" fill="#FFFFFF" opacity="0.85"/><circle cx="43" cy="36" r="2.2" fill="#2A2622"/><circle cx="57" cy="36" r="2.2" fill="#2A2622"/><ellipse cx="50" cy="45" rx="4" ry="3" fill="#2A2622"/><ellipse cx="25" cy="62" rx="6.5" ry="8.5" fill="#A9A6A0"/><ellipse cx="75" cy="62" rx="6.5" ry="8.5" fill="#A9A6A0"/><ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="#A9A6A0"/><ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="#A9A6A0"/>' },
-    { id:'hedgehog', caption:'15 days! Unstoppable!',
+    { name:'Hedgehog', caption:'Unstoppable!',
       svg:'<ellipse cx="50" cy="70" rx="27" ry="23" fill="#8B6F47"/><path d="M26 56 L17 47 L30 49 Z" fill="#8B6F47"/><path d="M33 46 L26 33 L40 41 Z" fill="#8B6F47"/><path d="M50 42 L45 27 L57 38 Z" fill="#8B6F47"/><path d="M67 46 L74 33 L60 41 Z" fill="#8B6F47"/><path d="M74 56 L83 47 L70 49 Z" fill="#8B6F47"/><ellipse cx="48" cy="64" rx="19" ry="17" fill="#EFE0C8"/><circle cx="41" cy="59" r="2.2" fill="#2B2016"/><circle cx="55" cy="59" r="2.2" fill="#2B2016"/><circle cx="46" cy="68" r="2.3" fill="#2B2016"/><ellipse cx="30" cy="88" rx="6" ry="4" fill="#8B6F47"/><ellipse cx="66" cy="88" rx="6" ry="4" fill="#8B6F47"/>' },
-    { id:'turtle', caption:'20 days?! Incredible!',
-      svg:'<ellipse cx="50" cy="68" rx="28" ry="24" fill="#6B9B5E"/><ellipse cx="50" cy="70" rx="18" ry="15" fill="#5A8A4D"/><circle cx="50" cy="34" r="18" fill="#A6C98A"/><circle cx="44" cy="32" r="2" fill="#2A2E1D"/><circle cx="56" cy="32" r="2" fill="#2A2E1D"/><path d="M46 40q4 2.5 8 0" stroke="#2A2E1D" stroke-width="1.4" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="60" rx="6" ry="9" fill="#A6C98A"/><ellipse cx="76" cy="60" rx="6" ry="9" fill="#A6C98A"/><ellipse cx="37" cy="90" rx="7" ry="5" fill="#A6C98A"/><ellipse cx="63" cy="90" rx="7" ry="5" fill="#A6C98A"/>' }
+    { name:'Turtle', caption:'Slow. Steady. Done.',
+      svg:'<ellipse cx="50" cy="68" rx="28" ry="24" fill="#6B9B5E"/><ellipse cx="50" cy="70" rx="18" ry="15" fill="#5A8A4D"/><circle cx="50" cy="34" r="18" fill="#A6C98A"/><circle cx="44" cy="32" r="2" fill="#2A2E1D"/><circle cx="56" cy="32" r="2" fill="#2A2E1D"/><path d="M46 40q4 2.5 8 0" stroke="#2A2E1D" stroke-width="1.4" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="60" rx="6" ry="9" fill="#A6C98A"/><ellipse cx="76" cy="60" rx="6" ry="9" fill="#A6C98A"/><ellipse cx="37" cy="90" rx="7" ry="5" fill="#A6C98A"/><ellipse cx="63" cy="90" rx="7" ry="5" fill="#A6C98A"/>' },
+    { name:'Fox', caption:'Too sharp.',
+      svg:'<path d="M30 24 L26 4 L46 16 Z" fill="#E0813A"/><path d="M70 24 L74 4 L54 16 Z" fill="#E0813A"/><path d="M32 21 L30 10 L40 16 Z" fill="#3A2418"/><path d="M68 21 L70 10 L60 16 Z" fill="#3A2418"/><ellipse cx="50" cy="68" rx="26" ry="25" fill="#E0813A"/><ellipse cx="50" cy="72" rx="14" ry="14" fill="#FFF1DF"/><circle cx="50" cy="36" r="20" fill="#E0813A"/><path d="M30 40 Q50 62 70 40 Q60 46 50 46 Q40 46 30 40 Z" fill="#FFF1DF"/><circle cx="43" cy="33" r="2.2" fill="#3A2418"/><circle cx="57" cy="33" r="2.2" fill="#3A2418"/><ellipse cx="50" cy="43" rx="3" ry="2.4" fill="#3A2418"/><path d="M46 47q4 3 8 0" stroke="#3A2418" stroke-width="1.4" fill="none" stroke-linecap="round"/><ellipse cx="25" cy="62" rx="6.5" ry="8.5" fill="#E0813A"/><ellipse cx="75" cy="62" rx="6.5" ry="8.5" fill="#E0813A"/><ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="#3A2418"/><ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="#3A2418"/>' },
+    { name:'Frog', caption:'Leaping ahead!',
+      svg:'<ellipse cx="50" cy="70" rx="27" ry="23" fill="#7CB854"/><ellipse cx="50" cy="74" rx="16" ry="14" fill="#CFE8A8"/><ellipse cx="50" cy="40" rx="25" ry="19" fill="#7CB854"/><circle cx="35" cy="22" r="10" fill="#7CB854"/><circle cx="65" cy="22" r="10" fill="#7CB854"/><circle cx="35" cy="22" r="6.5" fill="#FFFFFF"/><circle cx="65" cy="22" r="6.5" fill="#FFFFFF"/><circle cx="35" cy="23" r="3.2" fill="#2C4A1E"/><circle cx="65" cy="23" r="3.2" fill="#2C4A1E"/><path d="M36 46 Q50 56 64 46" stroke="#2C4A1E" stroke-width="1.8" fill="none" stroke-linecap="round"/><circle cx="46" cy="40" r="1.2" fill="#2C4A1E"/><circle cx="54" cy="40" r="1.2" fill="#2C4A1E"/><ellipse cx="24" cy="66" rx="6.5" ry="8.5" fill="#7CB854"/><ellipse cx="76" cy="66" rx="6.5" ry="8.5" fill="#7CB854"/><ellipse cx="33" cy="90" rx="10" ry="5" fill="#7CB854"/><ellipse cx="67" cy="90" rx="10" ry="5" fill="#7CB854"/>' },
+    { name:'Pig', caption:'Hungry for more.',
+      svg:'<path d="M31 22 L25 7 L43 15 Z" fill="#F2A7B5"/><path d="M69 22 L75 7 L57 15 Z" fill="#F2A7B5"/><ellipse cx="50" cy="68" rx="27" ry="25" fill="#F2A7B5"/><circle cx="50" cy="36" r="21" fill="#F2A7B5"/><ellipse cx="50" cy="43" rx="10" ry="7.5" fill="#E88A9D"/><ellipse cx="46.5" cy="43" rx="1.7" ry="2.4" fill="#4A2830"/><ellipse cx="53.5" cy="43" rx="1.7" ry="2.4" fill="#4A2830"/><circle cx="41" cy="31" r="2.2" fill="#4A2830"/><circle cx="59" cy="31" r="2.2" fill="#4A2830"/><ellipse cx="25" cy="62" rx="6.5" ry="8.5" fill="#F2A7B5"/><ellipse cx="75" cy="62" rx="6.5" ry="8.5" fill="#F2A7B5"/><ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="#E88A9D"/><ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="#E88A9D"/>' },
+    { name:'Sheep', caption:'Count me in!',
+      svg:'<circle cx="30" cy="62" r="14" fill="#F4F1EC"/><circle cx="70" cy="62" r="14" fill="#F4F1EC"/><circle cx="50" cy="72" r="18" fill="#F4F1EC"/><circle cx="36" cy="76" r="12" fill="#F4F1EC"/><circle cx="64" cy="76" r="12" fill="#F4F1EC"/><ellipse cx="38" cy="91" rx="6" ry="5" fill="#4A4540"/><ellipse cx="62" cy="91" rx="6" ry="5" fill="#4A4540"/><circle cx="32" cy="30" r="9" fill="#F4F1EC"/><circle cx="50" cy="22" r="10" fill="#F4F1EC"/><circle cx="68" cy="30" r="9" fill="#F4F1EC"/><ellipse cx="24" cy="38" rx="7" ry="4.5" fill="#4A4540" transform="rotate(20 24 38)"/><ellipse cx="76" cy="38" rx="7" ry="4.5" fill="#4A4540" transform="rotate(-20 76 38)"/><ellipse cx="50" cy="40" rx="14" ry="17" fill="#4A4540"/><circle cx="44" cy="37" r="2.4" fill="#FFFFFF"/><circle cx="56" cy="37" r="2.4" fill="#FFFFFF"/><circle cx="44" cy="37.3" r="1.1" fill="#1E1B18"/><circle cx="56" cy="37.3" r="1.1" fill="#1E1B18"/><ellipse cx="50" cy="47" rx="3" ry="2.2" fill="#2A2724"/>' },
+    { name:'Lion', caption:'Fear nothing.',
+      svg:'<ellipse cx="50" cy="70" rx="25" ry="23" fill="#EDBB6A"/><circle cx="50" cy="38" r="29" fill="#C27A2E"/><circle cx="50" cy="40" r="19" fill="#EDBB6A"/><circle cx="35" cy="19" r="6" fill="#EDBB6A"/><circle cx="65" cy="19" r="6" fill="#EDBB6A"/><ellipse cx="50" cy="46" rx="9" ry="6.5" fill="#FFF1D6"/><circle cx="43" cy="36" r="2.2" fill="#3A2412"/><circle cx="57" cy="36" r="2.2" fill="#3A2412"/><path d="M46.5 41 L53.5 41 L50 45 Z" fill="#3A2412"/><path d="M45 48q5 3 10 0" stroke="#3A2412" stroke-width="1.4" fill="none" stroke-linecap="round"/><ellipse cx="25" cy="66" rx="6.5" ry="8.5" fill="#EDBB6A"/><ellipse cx="75" cy="66" rx="6.5" ry="8.5" fill="#EDBB6A"/><ellipse cx="37" cy="90" rx="7.5" ry="5.5" fill="#EDBB6A"/><ellipse cx="63" cy="90" rx="7.5" ry="5.5" fill="#EDBB6A"/>' },
+    { name:'Hippo', caption:'Big strides.',
+      svg:'<ellipse cx="50" cy="70" rx="27" ry="23" fill="#9AA3B5"/><circle cx="31" cy="22" r="6" fill="#9AA3B5"/><circle cx="69" cy="22" r="6" fill="#9AA3B5"/><circle cx="31" cy="22" r="3" fill="#C9A3B0"/><circle cx="69" cy="22" r="3" fill="#C9A3B0"/><ellipse cx="50" cy="38" rx="24" ry="19" fill="#9AA3B5"/><ellipse cx="50" cy="47" rx="19" ry="11" fill="#B9C0D0"/><ellipse cx="43" cy="46" rx="2" ry="2.6" fill="#2B3040"/><ellipse cx="57" cy="46" rx="2" ry="2.6" fill="#2B3040"/><circle cx="40" cy="30" r="2.3" fill="#2B3040"/><circle cx="60" cy="30" r="2.3" fill="#2B3040"/><path d="M44 53q6 3 12 0" stroke="#2B3040" stroke-width="1.4" fill="none" stroke-linecap="round"/><ellipse cx="24" cy="66" rx="6.5" ry="8.5" fill="#9AA3B5"/><ellipse cx="76" cy="66" rx="6.5" ry="8.5" fill="#9AA3B5"/><ellipse cx="36" cy="91" rx="8" ry="5.5" fill="#9AA3B5"/><ellipse cx="64" cy="91" rx="8" ry="5.5" fill="#9AA3B5"/>' }
   ];
 
-  function computeLongestStreak(){
+  // Animal number i (0, 1, 2, ...). Past the end of the roster the animals repeat in a new colour.
+  function animalFor(i){
+    var e = ROSTER[i % ROSTER.length];
+    var cycle = Math.floor(i / ROSTER.length);
+    var hasSlot = (typeof e.slot === 'number');
+    return {
+      idx: i,
+      name: e.name,
+      svg: e.svg,
+      slot: hasSlot ? e.slot : null,
+      caption: hasSlot ? ENCOURAGEMENT[(currentWeek - 1 + e.slot) % ENCOURAGEMENT.length] : e.caption,
+      hue: cycle * 70
+    };
+  }
+
+  // The herd is never stored: it's replayed from the checkmarks, day by day, every time.
+  //  - you start with six animals
+  //  - every 5th finished day in a row earns a brand-new animal
+  //  - a past day with unfinished planned work kills the newest animal and resets the streak
+  //  - rest days change nothing; today isn't a miss until the day is over
+  // Because it's replayed, ticking off a day you forgot to tick brings its animal back.
+  function computeZoo(){
     var today = startOfDay(new Date());
     var days = [];
     WEEKS.forEach(function(w){
@@ -1638,52 +1669,142 @@
     });
     days.sort(function(a,b){ return a.date - b.date; });
 
-    var streak = 0, longest = 0;
-    for(var i=0;i<days.length;i++){
+    var herd = [], i;
+    for(i=0;i<START_HERD;i++) herd.push(i);
+    var nextNew = START_HERD;
+    var dead = [];          // animal numbers, in the order they died
+    var earned = 0;
+    var lastBorn = null;
+    var streak = 0;
+
+    for(i=0;i<days.length;i++){
       if(days[i].date > today) break;
-      var checkable = days[i].items.filter(function(it){ return isCheckable(it.type); });
-      if(checkable.length === 0) continue; // rest day, doesn't break or extend the streak
-      var allDone = checkable.every(function(it){ return it.done; });
-      if(allDone){ streak++; if(streak > longest) longest = streak; }
-      else { streak = 0; }
+      var required = days[i].items.filter(isStreakItem);
+      if(required.length === 0) continue;   // rest day (or only stacked extras): neither extends nor breaks
+      var allDone = required.every(function(it){ return it.done; });
+      if(allDone){
+        streak++;
+        if(streak % STREAK_FOR_NEW === 0){ lastBorn = nextNew; herd.push(nextNew); nextNew++; earned++; }
+      } else if(days[i].date < today){
+        streak = 0;
+        if(herd.length) dead.push(herd.pop());
+      }
     }
-    return longest;
+    return { herd:herd, dead:dead, earned:earned, kills:dead.length, streak:streak, lastBorn:lastBorn };
   }
 
-  function updateBonusAnimals(){
-    var longest = computeLongestStreak();
-    var unlocked = Math.min(Math.floor(longest / 5), BONUS_ANIMALS.length);
+  function buildZooItem(a){
+    var el = document.createElement('div');
+    el.className = 'buddy-item';
+    el.setAttribute('data-animal', a.idx);
+    if(a.slot !== null) el.setAttribute('data-slot', a.slot);
+    el.style.setProperty('--dance-dur', (2.0 + ((a.idx * 37) % 10) / 10 * 0.9).toFixed(2) + 's');
+    el.style.setProperty('--dance-delay', (((a.idx * 29) % 10) / 10 * 0.8).toFixed(2) + 's');
+    if(a.hue) el.style.filter = 'hue-rotate(' + a.hue + 'deg)';
+    el.innerHTML = '<svg class="buddy-svg" viewBox="0 0 100 100">' + a.svg + '</svg>' +
+      '<div class="buddy-caption">' + a.caption + '</div>';
+    return el;
+  }
 
-    var leftWrap = document.getElementById('sideBuddyLeft');
-    var rightWrap = document.getElementById('sideBuddyRight');
-    if(!leftWrap || !rightWrap) return;
+  var zooSig = null;
 
-    for(var i=0;i<unlocked;i++){
-      var animal = BONUS_ANIMALS[i];
-      if(document.getElementById('bonus-' + animal.id)) continue;
-      var target = (i % 2 === 0) ? leftWrap : rightWrap;
-      var el = document.createElement('div');
-      el.className = 'buddy-item';
-      el.id = 'bonus-' + animal.id;
-      el.innerHTML = '<svg class="buddy-svg" viewBox="0 0 100 100">' + animal.svg + '</svg>' +
-        '<div class="buddy-caption">' + animal.caption + '</div>';
-      target.appendChild(el);
+  function renderZoo(){
+    var row = document.getElementById('zooRow');
+    if(!row) return;
+    var z = computeZoo();
+
+    // Only rebuild the animals when the herd changes, so dancing and fly-aways aren't interrupted.
+    var sig = z.herd.join(',');
+    if(sig !== zooSig){
+      zooSig = sig;
+      row.innerHTML = '';
+      if(z.herd.length === 0){
+        row.innerHTML = '<p class="zoo-empty">The zoo is empty. Lock in.</p>';
+      } else {
+        z.herd.forEach(function(idx){ row.appendChild(buildZooItem(animalFor(idx))); });
+      }
+      document.getElementById('zoo').classList.toggle('dense', z.herd.length > 12);
+    } else {
+      // Same animals: just refresh the weekly captions on the first six.
+      row.querySelectorAll('.buddy-item[data-slot]').forEach(function(el){
+        if(el.classList.contains('flying')) return;
+        var a = animalFor(parseInt(el.getAttribute('data-animal'), 10));
+        var cap = el.querySelector('.buddy-caption');
+        if(cap) cap.textContent = a.caption;
+      });
     }
 
-    if(unlocked > (state.unlockedBonusCount || 0)){
-      announceUnlock(BONUS_ANIMALS[unlocked - 1]);
-      state.unlockedBonusCount = unlocked;
+    var n = z.herd.length;
+    var toNext = STREAK_FOR_NEW - (z.streak % STREAK_FOR_NEW);
+    var streakText = n + (n === 1 ? ' animal alive' : ' animals alive') + ' · ';
+    streakText += z.streak > 0
+      ? z.streak + '-day streak, ' + toNext + ' more ' + (toNext === 1 ? 'day' : 'days') + ' for a new animal'
+      : 'no streak yet, finish today’s workout to start one';
+    document.getElementById('zooStreak').textContent = streakText;
+
+    var grave = document.getElementById('zooGrave');
+    if(z.dead.length){
+      grave.textContent = '🪦 Lost: ' + z.dead.map(function(i){ return animalFor(i).name; }).join(', ') +
+        '. Forgot to tick a day? Check it off and they come back.';
+    } else {
+      grave.textContent = '';
+    }
+
+    checkZooEvents(z);
+  }
+
+  // Announce births and deaths once each (the counts are saved with the rest of the progress).
+  function checkZooEvents(z){
+    var earnedSeen = state.earnedSeen || 0;
+    var killsSeen = state.killsSeen || 0;
+    var queue = [];
+
+    if(z.kills > killsSeen){
+      queue.push({ kind:'death', animals:z.dead.slice(killsSeen).map(animalFor) });
+    }
+    if(z.earned > earnedSeen && z.lastBorn !== null && z.herd.indexOf(z.lastBorn) !== -1){
+      queue.push({ kind:'born', animals:[animalFor(z.lastBorn)] });
+    }
+
+    if(z.kills !== killsSeen || z.earned !== earnedSeen){
+      state.killsSeen = z.kills;
+      state.earnedSeen = z.earned;
       saveState();
     }
+
+    if(queue.length){
+      var overlay = document.getElementById('celebrateOverlay');
+      var offset = (overlay && overlay.classList.contains('show')) ? 1700 : 0;  // let a "Good job" finish first
+      queue.forEach(function(ev, i){
+        setTimeout(function(){ announceZoo(ev); }, offset + i * 2900);
+      });
+    }
   }
 
-  function announceUnlock(animal){
+  function announceZoo(ev){
     var overlay = document.getElementById('celebrateOverlay');
     if(!overlay) return;
-    var animalSvg = document.getElementById('celebrateAnimalSvg');
+    var svgEl = document.getElementById('celebrateAnimalSvg');
     var textEl = document.getElementById('celebrateText');
-    if(animalSvg) animalSvg.innerHTML = animal.svg;
-    if(textEl) textEl.textContent = 'New friend unlocked!';
+    var subEl = document.getElementById('celebrateSub');
+    var last = ev.animals[ev.animals.length - 1];
+
+    if(svgEl) svgEl.innerHTML = last.svg;
+    if(ev.kind === 'death'){
+      overlay.classList.add('grave');
+      if(textEl) textEl.textContent = 'R.I.P. ' + last.name;
+      if(subEl){
+        subEl.textContent = ev.animals.length > 1
+          ? 'You missed ' + ev.animals.length + ' days. Also gone: ' +
+            ev.animals.slice(0, -1).map(function(a){ return a.name; }).join(', ')
+          : 'You missed a day.';
+      }
+    } else {
+      overlay.classList.remove('grave');
+      if(textEl) textEl.textContent = 'New friend: ' + last.name + '!';
+      if(subEl) subEl.textContent = 'Five days in a row.';
+    }
+    overlay.classList.add('zoo-event');
 
     overlay.classList.remove('show');
     void overlay.offsetWidth;
@@ -1691,7 +1812,7 @@
     clearTimeout(celebrateTimeout);
     celebrateTimeout = setTimeout(function(){
       overlay.classList.remove('show');
-    }, 2400);
+    }, 2600);
   }
 
   function renderAll(){
@@ -1702,8 +1823,7 @@
     renderSwapHint();
     renderDays();
     renderFootnote();
-    updateSideBuddies();
-    updateBonusAnimals();
+    renderZoo();
   }
 
   function goWeek(n){
@@ -1721,6 +1841,7 @@
 
     var animalSvg = document.getElementById('celebrateAnimalSvg');
     var textEl = document.getElementById('celebrateText');
+    overlay.classList.remove('grave', 'zoo-event');
     if(animalSvg) animalSvg.innerHTML = CELEBRATE_ANIMALS[Math.floor(Math.random() * CELEBRATE_ANIMALS.length)];
     if(textEl) textEl.textContent = CELEBRATE_MESSAGES[Math.floor(Math.random() * CELEBRATE_MESSAGES.length)];
 
@@ -1839,11 +1960,11 @@
     });
   }
 
-  /* ---------------- Side Buddy fly-away ---------------- */
-  // Delegated on document (not per-item) so dynamically unlocked bonus animals get this too.
+  /* ---------------- Zoo fly-away ---------------- */
+  // Delegated on document (not per-item) so animals added later get this too.
   document.addEventListener('click', function(e){
     var item = e.target.closest('.buddy-item');
-    if(!item || !item.closest('.side-buddy')) return;
+    if(!item || !item.closest('.zoo')) return;
     if(item.classList.contains('flying')) return;
 
     var caption = item.querySelector('.buddy-caption');
